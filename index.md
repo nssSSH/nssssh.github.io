@@ -1,5 +1,5 @@
-Here you can say lots of fun things about your site.
+# NoClanker News
+Here, I can proudly say that there is NO usage of LLMs in ANY of the articles that you're going to read here!
+Maintained with 💝 by NSS
 
-Maybe say a some things about yourself.
-
-Or maybe what you plan to blog about.
+Check my latest posts below 👇
