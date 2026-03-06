@@ -3,2041 +3,708 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DISSOLUTION ... The Truth About Drugs</title>
+<title>DISSOLUTION</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;400;700;900&family=DM+Serif+Display:ital@0;1&family=Azeret+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700;1,9..144,900&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
-
-/* =============================================
-   ROOT & CUSTOM PROPERTIES
-   ============================================= */
 :root {
-  --black: #050508;
-  --white: #f0ede8;
-  --red: #c0392b;
-  --red-bright: #e74c3c;
-  --amber: #d4851a;
-  --dim: #2a2730;
-  --text-muted: #7a7585;
-  --font-display: 'Unbounded', sans-serif;
-  --font-serif: 'DM Serif Display', serif;
-  --font-mono: 'Azeret Mono', monospace;
+  --ink:  #09090f;
+  --ink2: #111119;
+  --ink3: #1c1c28;
+  --page: #f0ece3;
+  --muted: rgba(240,236,227,0.38);
+  --ghost: rgba(240,236,227,0.09);
+  --blood:  #b52b2b;
+  --blood2: #d63333;
+  --ice:    #8fb8d4;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-body:    'Instrument Serif', serif;
+  --f-mono:    'Geist Mono', monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--page);font-family:var(--f-body);overflow-x:hidden;cursor:none;}
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.026;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");}
+::selection{background:var(--blood);color:var(--page);}
+::-webkit-scrollbar{width:2px;}::-webkit-scrollbar-track{background:var(--ink);}::-webkit-scrollbar-thumb{background:var(--blood);}
+
+/* CURSOR */
+#cur{position:fixed;width:10px;height:10px;background:var(--page);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .35s var(--ease),height .35s var(--ease),background .3s;mix-blend-mode:difference;}
+#cur.big{width:52px;height:52px;background:var(--blood2);}
+
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:9998;background:var(--ink);display:flex;align-items:center;justify-content:center;transition:opacity 1s var(--ease),visibility 1s;}
+#loader.gone{opacity:0;visibility:hidden;}
+.ld-pct{font-family:var(--f-display);font-size:clamp(120px,22vw,280px);font-weight:900;font-style:italic;letter-spacing:-0.05em;line-height:1;color:var(--page);font-variation-settings:'opsz' 144;}
+.ld-bar-track{width:200px;height:1px;background:var(--ink3);margin:28px auto 0;}
+.ld-bar{height:1px;width:0%;background:var(--blood);transition:width .05s linear;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:9000;display:flex;align-items:center;justify-content:space-between;padding:28px 52px;mix-blend-mode:difference;}
+.nav-logo{font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.45em;text-transform:uppercase;color:var(--page);}
+.nav-list{display:flex;gap:36px;list-style:none;}
+.nav-list a{font-family:var(--f-mono);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--page);text-decoration:none;opacity:.35;transition:opacity .25s;}
+.nav-list a:hover{opacity:1;}
+
+/* REVEALS */
+.rv{opacity:0;transform:translateY(36px);transition:opacity .9s var(--ease),transform .9s var(--ease);}
+.rv.on{opacity:1;transform:none;}
+.rv-d1{transition-delay:.1s;}.rv-d2{transition-delay:.22s;}.rv-d3{transition-delay:.35s;}
+
+/* SECTION LABEL */
+.label{font-family:var(--f-mono);font-size:9px;font-weight:400;letter-spacing:.5em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:14px;margin-bottom:56px;}
+.label::before{content:'';width:22px;height:1px;background:var(--blood);flex-shrink:0;}
+.label span{color:var(--blood);}
+
+/* ── HERO ── */
+#hero{height:100vh;min-height:680px;position:relative;display:grid;grid-template-rows:1fr auto;overflow:hidden;}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%;}
+.hero-body{position:relative;z-index:2;align-self:flex-end;padding:0 52px 80px;display:grid;grid-template-columns:1fr auto;align-items:flex-end;gap:60px;}
+.hero-sub{font-family:var(--f-mono);font-size:10px;font-weight:400;letter-spacing:.45em;text-transform:uppercase;color:var(--blood);margin-bottom:22px;opacity:0;animation:fd .7s var(--ease) 2s forwards;}
+.hero-h1{font-family:var(--f-display);font-size:clamp(68px,12.5vw,188px);font-weight:900;font-style:italic;line-height:.86;letter-spacing:-0.04em;color:var(--page);font-variation-settings:'opsz' 144;}
+.hero-h1 .ln{display:block;overflow:hidden;}
+.hero-h1 .ln span{display:block;transform:translateY(108%);animation:su 1s var(--ease) forwards;}
+.hero-h1 .ln:nth-child(1) span{animation-delay:2.1s;}
+.hero-h1 .ln:nth-child(2) span{animation-delay:2.28s;color:transparent;-webkit-text-stroke:1px rgba(240,236,227,.22);}
+.hero-h1 .ln:nth-child(3) span{animation-delay:2.46s;color:var(--blood);}
+.hero-quote{font-family:var(--f-body);font-size:clamp(16px,1.6vw,20px);font-style:italic;color:var(--muted);max-width:340px;line-height:1.6;opacity:0;animation:fd .8s var(--ease) 2.9s forwards;}
+.hero-right{text-align:right;opacity:0;animation:fd .7s var(--ease) 3.1s forwards;}
+.hero-stat-n{font-family:var(--f-display);font-size:clamp(52px,7.5vw,108px);font-weight:900;letter-spacing:-0.04em;line-height:1;color:var(--blood);font-variation-settings:'opsz' 144;}
+.hero-stat-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+.hero-scroll{position:relative;z-index:2;padding:20px 52px 32px;display:flex;align-items:center;gap:14px;}
+.hero-scroll-line{width:48px;height:1px;background:linear-gradient(to right,var(--blood),transparent);opacity:0;animation:fd .7s var(--ease) 3.3s forwards;}
+.hero-scroll-txt{font-family:var(--f-mono);font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--muted);animation:blink-slow 2.5s ease-in-out 3.3s infinite both;opacity:0;}
+@keyframes blink-slow{0%{opacity:0}10%{opacity:.35}50%{opacity:.5}90%{opacity:.35}100%{opacity:.35}}
+@keyframes su{to{transform:none;}}
+@keyframes fd{from{opacity:0;}to{opacity:1;}}
+
+/* TAPE */
+.tape{overflow:hidden;border-top:1px solid var(--ghost);border-bottom:1px solid var(--ghost);padding:14px 0;background:var(--ink2);}
+.tape-track{display:flex;width:max-content;animation:tape 32s linear infinite;}
+.tape-item{font-family:var(--f-mono);font-size:9px;letter-spacing:.35em;text-transform:uppercase;padding:0 28px;white-space:nowrap;color:rgba(240,236,227,.17);}
+.tape-item.hi{color:rgba(181,43,43,.48);}
+@keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── §1 ── */
+#s1{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;background:var(--ink2);}
+.s1-text{padding:120px 64px 120px 52px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--ghost);}
+.s1-h2{font-family:var(--f-display);font-size:clamp(40px,5vw,70px);font-weight:700;line-height:1.05;color:var(--page);margin-bottom:36px;font-variation-settings:'opsz' 72;}
+.s1-h2 em{font-style:italic;font-weight:900;}
+.s1-pullquote{padding:22px 0 22px 28px;border-left:2px solid var(--blood);margin:36px 0;}
+.s1-pullquote p{font-family:var(--f-display);font-size:clamp(17px,1.9vw,23px);font-style:italic;color:rgba(240,236,227,.7);line-height:1.5;font-variation-settings:'opsz' 36;}
+.s1-body{font-family:var(--f-body);font-size:clamp(16px,1.35vw,18.5px);line-height:1.92;color:var(--muted);}
+.s1-body p+p{margin-top:1.2em;}
+.s1-visual{position:relative;background:var(--ink);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+#brain-canvas{width:100%;height:100%;min-height:520px;display:block;cursor:crosshair;}
+.brain-caption{position:absolute;bottom:32px;left:32px;right:32px;font-family:var(--f-mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(240,236,227,.2);border-top:1px solid var(--ghost);padding-top:14px;}
+.brain-caption span{color:var(--blood);}
+
+/* ── §2 ── */
+#s2{background:var(--ink);padding:140px 52px;}
+.s2-header{max-width:600px;margin-bottom:88px;}
+.s2-h2{font-family:var(--f-display);font-size:clamp(34px,4.5vw,58px);font-weight:700;line-height:1.1;letter-spacing:-.02em;color:var(--page);margin-bottom:20px;font-variation-settings:'opsz' 72;}
+.s2-deck{font-family:var(--f-body);font-size:clamp(17px,1.6vw,21px);font-style:italic;line-height:1.65;color:var(--muted);}
+.bento{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto;gap:1px;background:var(--ghost);}
+.b-cell{background:var(--ink2);padding:52px 44px;position:relative;transition:background .4s;}
+.b-cell:hover{background:#141420;}
+.b-hero{grid-column:span 2;padding:60px 52px;}
+.b-hero-num{font-family:var(--f-display);font-size:clamp(72px,12vw,160px);font-weight:900;letter-spacing:-.055em;line-height:1;color:var(--blood);font-variation-settings:'opsz' 144;margin-bottom:16px;display:block;}
+.b-hero-desc{font-family:var(--f-body);font-size:clamp(17px,1.5vw,20px);color:rgba(240,236,227,.55);line-height:1.55;max-width:480px;}
+.b-src{position:absolute;bottom:24px;right:28px;font-family:var(--f-mono);font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:rgba(240,236,227,.13);}
+.b-num{font-family:var(--f-display);font-size:clamp(48px,7vw,88px);font-weight:900;letter-spacing:-.04em;line-height:1;color:var(--page);font-variation-settings:'opsz' 144;margin-bottom:14px;display:block;}
+.b-num.ice{color:var(--ice);}
+.b-desc{font-family:var(--f-mono);font-size:10px;font-weight:300;letter-spacing:.04em;line-height:1.75;text-transform:uppercase;color:rgba(240,236,227,.35);max-width:280px;}
+
+/* ── §3 ── */
+#s3{background:var(--ink2);padding:140px 52px;}
+.timeline{max-width:800px;margin:0 auto;position:relative;}
+.timeline::before{content:'';position:absolute;left:20px;top:8px;bottom:8px;width:1px;background:linear-gradient(to bottom,transparent,var(--blood) 15%,var(--blood) 85%,transparent);opacity:.25;}
+.t-item{display:grid;grid-template-columns:60px 1fr;gap:0;margin-bottom:72px;position:relative;}
+.t-item:last-child{margin-bottom:0;}
+.t-node{display:flex;align-items:flex-start;padding-top:6px;justify-content:center;}
+.t-dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(181,43,43,.35);background:var(--ink2);flex-shrink:0;transition:background .5s,border-color .5s,box-shadow .5s;}
+.t-item.lit .t-dot{background:var(--blood);border-color:var(--blood);box-shadow:0 0 16px rgba(181,43,43,.45);}
+.t-content{padding:0 0 0 28px;}
+.t-phase{font-family:var(--f-mono);font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--blood);margin-bottom:6px;opacity:.8;}
+.t-time{font-family:var(--f-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+.t-title{font-family:var(--f-display);font-size:clamp(22px,2.8vw,34px);font-weight:700;font-style:italic;color:var(--page);margin-bottom:14px;line-height:1.1;font-variation-settings:'opsz' 36;}
+.t-body{font-family:var(--f-body);font-size:clamp(15px,1.3vw,17px);line-height:1.9;color:var(--muted);}
+.t-sev{display:flex;align-items:center;gap:10px;margin-top:18px;}
+.t-pips{display:flex;gap:4px;}
+.t-pip{width:18px;height:2px;border-radius:2px;background:var(--ink3);}
+.t-pip.on{background:var(--blood);}
+.t-pip.red{background:#dd0000;box-shadow:0 0 5px #dd0000;}
+.t-sev-lbl{font-family:var(--f-mono);font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);}
+
+/* ── §4 ── */
+#s4{background:var(--ink);padding:140px 52px;}
+.s4-header{text-align:center;margin-bottom:72px;}
+.s4-h2{font-family:var(--f-display);font-size:clamp(38px,6vw,86px);font-weight:900;font-style:italic;letter-spacing:-.04em;line-height:.9;color:var(--page);font-variation-settings:'opsz' 144;margin-bottom:18px;}
+.s4-h2 em{color:var(--blood);font-style:normal;}
+.s4-deck{font-family:var(--f-body);font-size:clamp(16px,1.5vw,20px);font-style:italic;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.6;}
+.ecg-panel{max-width:960px;margin:0 auto;}
+.ecg-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--ghost);}
+.ecg-bpm-lbl{font-family:var(--f-mono);font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.ecg-bpm-val{font-family:var(--f-display);font-size:clamp(42px,5.5vw,72px);font-weight:900;letter-spacing:-.04em;line-height:1;color:var(--blood);font-variation-settings:'opsz' 144;transition:color .5s;}
+.ecg-status{font-family:var(--f-mono);font-size:9px;letter-spacing:.35em;text-transform:uppercase;padding:7px 16px;border:1px solid rgba(181,43,43,.3);color:var(--blood);align-self:flex-end;margin-bottom:4px;transition:border-color .5s,color .5s;}
+#ecg-canvas{display:block;width:100%;height:160px;border:1px solid var(--ghost);}
+.drug-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;justify-content:center;}
+.db{font-family:var(--f-mono);font-size:9px;letter-spacing:.28em;text-transform:uppercase;padding:10px 18px;border:1px solid rgba(240,236,227,.1);color:rgba(240,236,227,.35);background:transparent;cursor:pointer;transition:border-color .3s,color .3s,background .3s;}
+.db:hover,.db.active{border-color:var(--blood);color:var(--page);background:rgba(181,43,43,.08);}
+
+/* ── §5 ── */
+#s5{background:var(--ink2);padding:140px 52px;}
+.body-cols{display:grid;grid-template-columns:1fr 1fr;gap:88px;max-width:1100px;margin:0 auto;}
+.body-col-title{font-family:var(--f-display);font-size:clamp(26px,3vw,40px);font-weight:700;font-style:italic;line-height:1.1;color:var(--page);margin-bottom:48px;font-variation-settings:'opsz' 72;}
+.oe{margin-bottom:52px;padding-bottom:52px;border-bottom:1px solid var(--ghost);}
+.oe:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.oe-tag{font-family:var(--f-mono);font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:var(--blood);margin-bottom:10px;}
+.oe-title{font-family:var(--f-display);font-size:clamp(20px,2.2vw,28px);font-weight:700;font-style:italic;color:var(--page);margin-bottom:14px;line-height:1.2;font-variation-settings:'opsz' 36;}
+.oe-body{font-family:var(--f-body);font-size:clamp(15px,1.25vw,17px);line-height:1.9;color:var(--muted);}
+
+/* ── §6 ── */
+#s6{background:var(--ink);padding:140px 52px;}
+.s6-h2{font-family:var(--f-display);font-size:clamp(44px,8vw,120px);font-weight:900;font-style:italic;line-height:.88;letter-spacing:-.05em;color:var(--page);font-variation-settings:'opsz' 144;margin-bottom:88px;}
+.voices-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ghost);}
+.voice{background:var(--ink);padding:52px 44px;transition:background .4s;}
+.voice:hover{background:#0d0d16;}
+.voice-qmark{font-family:var(--f-display);font-size:80px;font-style:italic;color:rgba(181,43,43,.16);line-height:.8;margin-bottom:16px;font-variation-settings:'opsz' 144;}
+.voice-body{font-family:var(--f-body);font-size:clamp(15px,1.5vw,19px);font-style:italic;line-height:1.72;color:rgba(240,236,227,.75);margin-bottom:36px;}
+.voice-attr{font-family:var(--f-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,236,227,.22);}
+.voice-drug{font-family:var(--f-mono);font-size:9px;color:var(--blood);letter-spacing:.2em;margin-top:5px;}
+
+/* ── §7 ── */
+#s7{background:var(--blood);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 52px;position:relative;overflow:hidden;}
+#cta-ecg{position:absolute;inset:0;width:100%;height:100%;opacity:.07;pointer-events:none;}
+.cta-pre{font-family:var(--f-mono);font-size:9px;letter-spacing:.55em;text-transform:uppercase;color:rgba(240,236,227,.6);margin-bottom:36px;position:relative;z-index:1;}
+.cta-h2{font-family:var(--f-display);font-size:clamp(64px,16vw,220px);font-weight:900;font-style:italic;color:var(--page);letter-spacing:-.055em;line-height:.84;font-variation-settings:'opsz' 144;margin-bottom:40px;position:relative;z-index:1;}
+.cta-deck{font-family:var(--f-body);font-size:clamp(18px,2vw,26px);font-style:italic;color:rgba(240,236,227,.8);max-width:520px;line-height:1.55;margin-bottom:72px;position:relative;z-index:1;}
+.help-cards{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:56px;position:relative;z-index:1;}
+.hc{background:rgba(0,0,0,.2);border:1px solid rgba(240,236,227,.2);padding:28px 36px;min-width:200px;text-align:left;cursor:pointer;transition:transform .4s var(--ease),background .3s,border-color .3s;backdrop-filter:blur(3px);}
+.hc:hover{transform:translateY(-6px);background:rgba(0,0,0,.35);border-color:rgba(240,236,227,.45);}
+.hc-region{font-family:var(--f-mono);font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:rgba(240,236,227,.4);margin-bottom:10px;}
+.hc-name{font-family:var(--f-display);font-size:22px;font-weight:700;font-style:italic;color:var(--page);margin-bottom:8px;font-variation-settings:'opsz' 36;}
+.hc-num{font-family:var(--f-mono);font-size:14px;font-weight:600;color:var(--page);letter-spacing:.06em;}
+.cta-note{font-family:var(--f-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,236,227,.4);position:relative;z-index:1;}
+.cta-note strong{color:rgba(240,236,227,.8);}
+
+/* FOOTER */
+footer{background:var(--ink);padding:52px;display:grid;grid-template-columns:1fr 2fr 1fr;align-items:center;gap:40px;border-top:1px solid var(--ghost);}
+.f-brand{font-family:var(--f-mono);font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:rgba(240,236,227,.18);}
+.f-disc{font-family:var(--f-mono);font-size:9px;letter-spacing:.04em;line-height:1.7;color:rgba(240,236,227,.18);text-align:center;}
+.f-right{font-family:var(--f-display);font-size:12px;font-style:italic;color:rgba(240,236,227,.15);text-align:right;font-variation-settings:'opsz' 36;}
+
+@media(max-width:1024px){
+  #s1{grid-template-columns:1fr;}
+  .s1-visual{min-height:420px;border-top:1px solid var(--ghost);}
+  .body-cols{grid-template-columns:1fr;gap:0;}
+  .bento{grid-template-columns:1fr 1fr;}
+  .b-hero{grid-column:span 2;}
+  .voices-grid{grid-template-columns:1fr;}
+  footer{grid-template-columns:1fr;text-align:center;}
+  .f-right{text-align:center;}
+}
+@media(max-width:720px){
+  nav{padding:20px 24px;}.nav-list{display:none;}
+  .hero-body{grid-template-columns:1fr;padding:0 24px 60px;gap:28px;}
+  .hero-scroll{padding:16px 24px 24px;}
+  #s1,.tape,#s2,#s3,#s4,#s5,#s6,#s7{padding-left:24px;padding-right:24px;}
+  .bento{grid-template-columns:1fr;}.b-hero{grid-column:span 1;}
+  footer{padding:40px 24px;gap:24px;}
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--black);
-  color: var(--white);
-  font-family: var(--font-mono);
-  overflow-x: hidden;
-  cursor: none;
-}
-
-/* =============================================
-   CUSTOM CURSOR
-   ============================================= */
-.cursor {
-  width: 12px; height: 12px;
-  background: var(--red-bright);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
-  mix-blend-mode: difference;
-}
-.cursor-ring {
-  width: 36px; height: 36px;
-  border: 1px solid rgba(192,57,43,0.5);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 99998;
-  transform: translate(-50%, -50%);
-  transition: all 0.15s ease;
-}
-
-/* =============================================
-   NOISE OVERLAY
-   ============================================= */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9998;
-  opacity: 0.4;
-}
-
-/* =============================================
-   LOADING SCREEN
-   ============================================= */
-#loader {
-  position: fixed;
-  inset: 0;
-  background: var(--black);
-  z-index: 99997;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.8s ease, visibility 0.8s;
-}
-#loader.hidden { opacity: 0; visibility: hidden; }
-
-.loader-text {
-  font-family: var(--font-mono);
-  font-size: clamp(10px, 1.2vw, 14px);
-  letter-spacing: 0.3em;
-  color: var(--text-muted);
-  margin-bottom: 40px;
-  text-transform: uppercase;
-}
-.loader-bar-wrap {
-  width: 200px; height: 1px;
-  background: var(--dim);
-}
-.loader-bar {
-  height: 100%;
-  background: var(--red-bright);
-  width: 0%;
-  transition: width 0.05s linear;
-}
-.loader-percent {
-  font-family: var(--font-display);
-  font-size: clamp(60px, 8vw, 100px);
-  font-weight: 900;
-  color: var(--red-bright);
-  margin-top: 30px;
-  letter-spacing: -0.04em;
-}
-
-/* =============================================
-   NAV
-   ============================================= */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 9000;
-  padding: 24px 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  mix-blend-mode: difference;
-}
-.nav-logo {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  color: var(--white);
-  text-transform: uppercase;
-}
-.nav-links {
-  display: flex; gap: 32px; list-style: none;
-}
-.nav-links a {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 300;
-  letter-spacing: 0.2em;
-  color: var(--white);
-  text-decoration: none;
-  text-transform: uppercase;
-  opacity: 0.6;
-  transition: opacity 0.3s;
-}
-.nav-links a:hover { opacity: 1; }
-
-/* =============================================
-   HERO SECTION
-   ============================================= */
-#hero {
-  min-height: 100vh;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 0 80px 0;
-  overflow: hidden;
-}
-
-#hero-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 10;
-  padding: 0 60px;
-}
-
-.hero-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 300;
-  letter-spacing: 0.4em;
-  color: var(--red-bright);
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.hero-eyebrow::before {
-  content: '';
-  width: 40px; height: 1px;
-  background: var(--red-bright);
-}
-
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(60px, 11vw, 160px);
-  font-weight: 900;
-  line-height: 0.88;
-  letter-spacing: -0.04em;
-  color: var(--white);
-  text-transform: uppercase;
-  margin-bottom: 40px;
-}
-
-.hero-title .line-2 {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(240,237,232,0.3);
-  display: block;
-}
-.hero-title .line-3 {
-  color: var(--red-bright);
-  display: block;
-  font-style: normal;
-}
-
-.hero-sub-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
-}
-
-.hero-body {
-  font-family: var(--font-serif);
-  font-size: clamp(16px, 2vw, 22px);
-  font-style: italic;
-  color: rgba(240,237,232,0.6);
-  max-width: 480px;
-  line-height: 1.5;
-}
-
-.hero-stat {
-  text-align: right;
-}
-.hero-stat-num {
-  font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 64px);
-  font-weight: 900;
-  color: var(--red-bright);
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-.hero-stat-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-
-.scroll-cue {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  z-index: 10;
-  animation: bounceDown 2s ease-in-out infinite;
-}
-.scroll-cue span {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-.scroll-line {
-  width: 1px; height: 50px;
-  background: linear-gradient(to bottom, var(--text-muted), transparent);
-}
-@keyframes bounceDown {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(8px); }
-}
-
-/* =============================================
-   SECTION SHARED
-   ============================================= */
-section {
-  position: relative;
-  overflow: hidden;
-}
-
-.section-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.section-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--dim);
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* =============================================
-   CHAPTER 1 ... THE SEDUCTION
-   ============================================= */
-#chapter1 {
-  min-height: 100vh;
-  background: var(--black);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-
-.ch1-left {
-  padding: 120px 60px 80px 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-right: 1px solid var(--dim);
-}
-
-.ch1-chapter-num {
-  font-family: var(--font-display);
-  font-size: clamp(120px, 18vw, 220px);
-  font-weight: 900;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--dim);
-  line-height: 1;
-  letter-spacing: -0.06em;
-  position: absolute;
-  top: 40px;
-  right: -20px;
-  z-index: 0;
-  user-select: none;
-}
-
-.ch1-heading {
-  font-family: var(--font-serif);
-  font-size: clamp(40px, 5vw, 68px);
-  font-style: italic;
-  line-height: 1.1;
-  color: var(--white);
-  position: relative;
-  z-index: 1;
-  margin-bottom: 32px;
-}
-.ch1-heading em {
-  font-style: normal;
-  color: var(--amber);
-}
-
-.ch1-body {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 1.9;
-  color: rgba(240,237,232,0.55);
-  position: relative;
-  z-index: 1;
-  max-width: 480px;
-  margin-bottom: 40px;
-}
-
-.pull-quote {
-  border-left: 2px solid var(--amber);
-  padding: 16px 24px;
-  font-family: var(--font-serif);
-  font-size: clamp(18px, 2.2vw, 26px);
-  font-style: italic;
-  color: var(--amber);
-  margin: 32px 0;
-  line-height: 1.4;
-}
-
-.ch1-right {
-  position: relative;
-  overflow: hidden;
-  min-height: 600px;
-}
-
-.brain-visual {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(ellipse at center, #1a0a0a 0%, var(--black) 70%);
-}
-
-#brain-canvas { width: 100%; height: 100%; display: block; }
-
-/* =============================================
-   CHAPTER 2 ... THE STATISTICS
-   ============================================= */
-#chapter2 {
-  background: #0a0508;
-  padding: 140px 60px;
-  min-height: 100vh;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  margin: 80px 0;
-  border: 1px solid var(--dim);
-}
-
-.stat-card {
-  padding: 60px 40px;
-  border-right: 1px solid var(--dim);
-  border-bottom: 1px solid var(--dim);
-  position: relative;
-  overflow: hidden;
-  transition: background 0.4s;
-  cursor: default;
-}
-.stat-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(192,57,43,0.05), transparent);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.stat-card:hover::before { opacity: 1; }
-.stat-card:hover { background: rgba(192,57,43,0.03); }
-
-.stat-card:nth-child(3n) { border-right: none; }
-
-.stat-number {
-  font-family: var(--font-display);
-  font-size: clamp(44px, 6vw, 88px);
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  line-height: 1;
-  color: var(--red-bright);
-  margin-bottom: 16px;
-  display: block;
-}
-.stat-number.counter { display: inline-block; }
-
-.stat-desc {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 0.05em;
-  line-height: 1.7;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-
-.stat-drug {
-  position: absolute;
-  bottom: 16px; right: 20px;
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--dim);
-  text-transform: uppercase;
-}
-
-.ch2-heading {
-  font-family: var(--font-display);
-  font-size: clamp(32px, 4vw, 56px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  color: var(--white);
-  max-width: 600px;
-}
-
-.ch2-sub {
-  font-family: var(--font-serif);
-  font-size: clamp(16px, 2vw, 22px);
-  font-style: italic;
-  color: var(--text-muted);
-  margin-top: 20px;
-  max-width: 500px;
-}
-
-/* =============================================
-   CHAPTER 3 ... THE TIMELINE
-   ============================================= */
-#chapter3 {
-  background: var(--black);
-  padding: 140px 60px;
-  min-height: 100vh;
-}
-
-.timeline-heading {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 3.5vw, 48px);
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  color: var(--white);
-  margin-bottom: 80px;
-  text-transform: uppercase;
-}
-
-.timeline {
-  position: relative;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.timeline-spine {
-  position: absolute;
-  left: 50%;
-  top: 0; bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, var(--dim), var(--red-bright), var(--dim));
-  transform: translateX(-50%);
-}
-
-.timeline-item {
-  display: grid;
-  grid-template-columns: 1fr 60px 1fr;
-  gap: 0;
-  margin-bottom: 80px;
-  align-items: start;
-}
-
-.timeline-item:nth-child(even) .tl-content { order: 3; text-align: left; }
-.timeline-item:nth-child(even) .tl-empty { order: 1; }
-
-.tl-content { padding: 0 40px; }
-.tl-empty {}
-
-.tl-dot-wrap {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 8px;
-}
-.tl-dot {
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: var(--black);
-  border: 2px solid var(--red-bright);
-  flex-shrink: 0;
-  position: relative;
-  transition: all 0.3s;
-}
-.tl-dot.active {
-  background: var(--red-bright);
-  box-shadow: 0 0 20px var(--red-bright);
-}
-
-.tl-time {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.25em;
-  color: var(--red-bright);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.tl-title {
-  font-family: var(--font-display);
-  font-size: clamp(18px, 2vw, 26px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--white);
-  margin-bottom: 12px;
-}
-
-.tl-body {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.8;
-  color: var(--text-muted);
-}
-
-.tl-severity {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-.severity-bar {
-  display: flex;
-  gap: 3px;
-}
-.severity-pip {
-  width: 16px; height: 3px;
-  background: var(--dim);
-  border-radius: 2px;
-  transition: background 0.3s;
-}
-.severity-pip.on { background: var(--red-bright); }
-
-/* =============================================
-   CHAPTER 4 ... THE HEARTBEAT
-   ============================================= */
-#chapter4 {
-  min-height: 100vh;
-  background: #040206;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 120px 60px;
-  text-align: center;
-  position: relative;
-}
-
-.ch4-title {
-  font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 72px);
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  color: var(--white);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-.ch4-title span { color: var(--red-bright); }
-
-.ch4-sub {
-  font-family: var(--font-serif);
-  font-size: clamp(16px, 2vw, 22px);
-  font-style: italic;
-  color: var(--text-muted);
-  margin-bottom: 60px;
-  max-width: 500px;
-}
-
-#ecg-canvas {
-  width: 100%;
-  max-width: 900px;
-  height: 160px;
-  display: block;
-}
-
-.ecg-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  margin-top: 20px;
-}
-#ecg-status {
-  color: var(--red-bright);
-  font-weight: 700;
-  display: inline;
-}
-
-.drugs-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 60px;
-  max-width: 800px;
-}
-
-.drug-tag {
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  border: 1px solid var(--dim);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.drug-tag::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--red-bright);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s;
-  z-index: -1;
-}
-.drug-tag:hover::after { transform: scaleX(1); }
-.drug-tag:hover { color: var(--white); border-color: var(--red-bright); }
-
-/* =============================================
-   CHAPTER 5 ... THE BODY
-   ============================================= */
-#chapter5 {
-  background: var(--black);
-  padding: 140px 60px;
-  min-height: 100vh;
-}
-
-.body-grid {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 80px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.body-figure {
-  position: sticky;
-  top: 120px;
-  height: fit-content;
-}
-
-.body-svg-wrap {
-  position: relative;
-  width: 100%;
-}
-
-.organ-point {
-  position: absolute;
-  cursor: pointer;
-  z-index: 10;
-}
-.organ-dot {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  background: var(--red-bright);
-  position: relative;
-  animation: pulse-dot 2s ease-in-out infinite;
-  transition: transform 0.2s;
-}
-.organ-dot::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 1px solid rgba(231,76,60,0.4);
-  animation: pulse-ring 2s ease-in-out infinite;
-}
-@keyframes pulse-dot {
-  0%, 100% { box-shadow: 0 0 6px var(--red-bright); }
-  50% { box-shadow: 0 0 18px var(--red-bright); }
-}
-@keyframes pulse-ring {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.8); opacity: 0; }
-}
-.organ-point:hover .organ-dot { transform: scale(1.5); }
-
-.body-entries { display: flex; flex-direction: column; gap: 60px; }
-
-.body-entry {
-  border-left: 1px solid var(--dim);
-  padding: 0 0 0 40px;
-  position: relative;
-  transition: border-color 0.3s;
-}
-.body-entry.active { border-color: var(--red-bright); }
-.body-entry::before {
-  content: '';
-  position: absolute;
-  left: -5px; top: 14px;
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  background: var(--dim);
-  transition: background 0.3s, box-shadow 0.3s;
-}
-.body-entry.active::before {
-  background: var(--red-bright);
-  box-shadow: 0 0 10px var(--red-bright);
-}
-
-.be-organ {
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--red-bright);
-  margin-bottom: 8px;
-}
-
-.be-title {
-  font-family: var(--font-serif);
-  font-size: clamp(24px, 3vw, 38px);
-  font-style: italic;
-  color: var(--white);
-  margin-bottom: 16px;
-  line-height: 1.2;
-}
-
-.be-body {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 300;
-  line-height: 1.9;
-  color: rgba(240,237,232,0.5);
-}
-
-.be-drugs {
-  margin-top: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.be-drug-chip {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border: 1px solid rgba(192,57,43,0.3);
-  color: var(--red-bright);
-  border-radius: 2px;
-}
-
-/* =============================================
-   CHAPTER 6 ... THE VOICES
-   ============================================= */
-#chapter6 {
-  background: #06040a;
-  padding: 140px 60px;
-  min-height: 80vh;
-}
-
-.voices-intro {
-  text-align: center;
-  margin-bottom: 100px;
-}
-
-.vi-heading {
-  font-family: var(--font-display);
-  font-size: clamp(32px, 4.5vw, 64px);
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  color: var(--white);
-  text-transform: uppercase;
-}
-
-.vi-sub {
-  font-family: var(--font-serif);
-  font-size: clamp(16px, 2vw, 22px);
-  font-style: italic;
-  color: var(--text-muted);
-  margin-top: 16px;
-}
-
-.testimonials {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-}
-
-.testimonial {
-  padding: 60px 40px;
-  background: rgba(255,255,255,0.01);
-  border: 1px solid var(--dim);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s;
-}
-.testimonial:hover {
-  background: rgba(192,57,43,0.04);
-  border-color: rgba(192,57,43,0.3);
-}
-
-.t-quote-mark {
-  font-family: var(--font-serif);
-  font-size: 100px;
-  color: var(--dim);
-  line-height: 1;
-  position: absolute;
-  top: 10px; left: 20px;
-  font-style: italic;
-}
-
-.t-body {
-  font-family: var(--font-serif);
-  font-size: clamp(15px, 1.8vw, 20px);
-  font-style: italic;
-  color: rgba(240,237,232,0.8);
-  line-height: 1.6;
-  position: relative;
-  z-index: 1;
-  margin-top: 40px;
-}
-
-.t-attr {
-  margin-top: 32px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-.t-drug { color: var(--red-bright); margin-top: 4px; }
-
-/* =============================================
-   CHAPTER 7 ... THE CALL
-   ============================================= */
-#chapter7 {
-  min-height: 100vh;
-  background: var(--red);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 120px 60px;
-  position: relative;
-  overflow: hidden;
-}
-
-#chapter7::before {
-  content: 'STOP';
-  font-family: var(--font-display);
-  font-size: 40vw;
-  font-weight: 900;
-  color: rgba(0,0,0,0.06);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  letter-spacing: -0.06em;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.call-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: rgba(240,237,232,0.6);
-  margin-bottom: 32px;
-}
-
-.call-title {
-  font-family: var(--font-display);
-  font-size: clamp(44px, 8vw, 120px);
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  color: var(--white);
-  text-transform: uppercase;
-  line-height: 0.88;
-  margin-bottom: 40px;
-}
-
-.call-sub {
-  font-family: var(--font-serif);
-  font-size: clamp(18px, 2.5vw, 28px);
-  font-style: italic;
-  color: rgba(240,237,232,0.8);
-  max-width: 600px;
-  line-height: 1.5;
-  margin-bottom: 60px;
-}
-
-.help-cards {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 60px;
-}
-
-.help-card {
-  background: rgba(0,0,0,0.2);
-  border: 1px solid rgba(240,237,232,0.2);
-  padding: 32px 40px;
-  min-width: 220px;
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.help-card:hover {
-  background: rgba(0,0,0,0.4);
-  transform: translateY(-4px);
-}
-
-.hc-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(240,237,232,0.5);
-  margin-bottom: 8px;
-}
-.hc-name {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: -0.01em;
-  margin-bottom: 8px;
-}
-.hc-num {
-  font-family: var(--font-mono);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: 0.05em;
-}
-
-.call-cta {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(240,237,232,0.5);
-}
-.call-cta strong {
-  color: var(--white);
-  font-weight: 700;
-}
-
-/* =============================================
-   FOOTER
-   ============================================= */
-footer {
-  background: var(--black);
-  padding: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid var(--dim);
-}
-
-.footer-brand {
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-.footer-disclaimer {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 300;
-  color: var(--text-muted);
-  max-width: 400px;
-  text-align: center;
-  line-height: 1.6;
-  letter-spacing: 0.05em;
-}
-
-/* =============================================
-   GLITCH EFFECT
-   ============================================= */
-.glitch {
-  position: relative;
-  display: inline-block;
-}
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-}
-.glitch::before {
-  color: var(--red-bright);
-  animation: glitch-1 3s infinite linear;
-  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
-}
-.glitch::after {
-  color: #00eeff;
-  animation: glitch-2 3s infinite linear;
-  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
-}
-@keyframes glitch-1 {
-  0%, 92%, 100% { transform: none; opacity: 0; }
-  93% { transform: translate(-3px, 0); opacity: 0.8; }
-  94% { transform: translate(3px, 0); opacity: 0.8; }
-  95% { transform: translate(0, 0); opacity: 0; }
-}
-@keyframes glitch-2 {
-  0%, 94%, 100% { transform: none; opacity: 0; }
-  95% { transform: translate(3px, 0); opacity: 0.8; }
-  96% { transform: translate(-3px, 0); opacity: 0.8; }
-  97% { transform: translate(0, 0); opacity: 0; }
-}
-
-/* =============================================
-   HORIZONTAL SCROLLING TEXT
-   ============================================= */
-.marquee-wrap {
-  overflow: hidden;
-  border-top: 1px solid var(--dim);
-  border-bottom: 1px solid var(--dim);
-  padding: 16px 0;
-  background: rgba(192,57,43,0.04);
-}
-.marquee-track {
-  display: flex;
-  gap: 0;
-  animation: marquee 30s linear infinite;
-  width: max-content;
-}
-.marquee-item {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  padding: 0 40px;
-  white-space: nowrap;
-}
-.marquee-item.accent { color: var(--red-bright); }
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-/* =============================================
-   RESPONSIVE
-   ============================================= */
-@media (max-width: 900px) {
-  #chapter1 { grid-template-columns: 1fr; }
-  .ch1-right { min-height: 400px; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .testimonials { grid-template-columns: 1fr; }
-  .body-grid { grid-template-columns: 1fr; }
-  .body-figure { position: relative; top: 0; }
-  nav { padding: 20px 24px; }
-  .nav-links { display: none; }
-  section { padding: 80px 24px; }
-  #chapter2, #chapter3, #chapter5, #chapter6 { padding: 80px 24px; }
-  footer { flex-direction: column; gap: 20px; text-align: center; }
-}
-
-/* =============================================
-   SCROLLBAR
-   ============================================= */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--black); }
-::-webkit-scrollbar-thumb { background: var(--red); }
-
-/* =============================================
-   SELECTION
-   ============================================= */
-::selection { background: var(--red); color: var(--white); }
-
 </style>
 </head>
 <body>
 
-<!-- CURSOR -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<div id="cur"></div>
 
-<!-- LOADER -->
 <div id="loader">
-  <div class="loader-text">Loading Truth</div>
-  <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
-  <div class="loader-percent" id="loaderNum">0</div>
+  <div style="text-align:center">
+    <div class="ld-pct" id="ld-n">0</div>
+    <div class="ld-bar-track"><div class="ld-bar" id="ld-b"></div></div>
+  </div>
 </div>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo">Dissolution</div>
-  <ul class="nav-links">
-    <li><a href="#chapter1">The Lie</a></li>
-    <li><a href="#chapter2">The Numbers</a></li>
-    <li><a href="#chapter3">The Timeline</a></li>
-    <li><a href="#chapter4">The Body</a></li>
-    <li><a href="#chapter7">Get Help</a></li>
+  <ul class="nav-list">
+    <li><a href="#s1">The Lie</a></li>
+    <li><a href="#s2">Numbers</a></li>
+    <li><a href="#s3">Descent</a></li>
+    <li><a href="#s4">Heartbeat</a></li>
+    <li><a href="#s7">Get Help</a></li>
   </ul>
 </nav>
 
-<!-- ===== HERO ===== -->
+<!-- HERO -->
 <section id="hero">
   <canvas id="hero-canvas"></canvas>
-  <div class="hero-content">
-    <div class="hero-eyebrow reveal">A Visual Journey Through Addiction</div>
-    <h1 class="hero-title reveal" style="transition-delay:0.15s">
-      <span>EVERY</span>
-      <span class="line-2">CHOICE</span>
-      <span class="line-3">COSTS.</span>
-    </h1>
-    <div class="hero-sub-row reveal" style="transition-delay:0.3s">
-      <p class="hero-body">
-        "The first step feels like freedom.<br>The last step leaves no steps at all."
-      </p>
-      <div class="hero-stat">
-        <div class="hero-stat-num" id="hero-counter">0</div>
-        <div class="hero-stat-label">Deaths from drugs today</div>
-      </div>
+  <div class="hero-body">
+    <div>
+      <div class="hero-sub">A visual inquiry into addiction</div>
+      <h1 class="hero-h1">
+        <span class="ln"><span>Every</span></span>
+        <span class="ln"><span>Choice</span></span>
+        <span class="ln"><span>Costs.</span></span>
+      </h1>
+      <p class="hero-quote">"The first step feels like freedom.<br>The last step leaves no steps at all."</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat-l">Deaths from drugs</div>
+      <div class="hero-stat-n" id="hero-n">0</div>
+      <div class="hero-stat-l">per day · globally</div>
     </div>
   </div>
-  <div class="scroll-cue">
-    <span>Scroll</span>
-    <div class="scroll-line"></div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <div class="hero-scroll-txt">Scroll to descend</div>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span class="marquee-item">Cocaine</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Heroin</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Methamphetamine</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Fentanyl</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">MDMA</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Opioids</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Ketamine</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Benzodiazepines</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Crystal Meth</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item accent">500,000 DEATHS ANNUALLY</span>
-    <span class="marquee-item accent">→</span>
-    <!-- Duplicate for seamless loop -->
-    <span class="marquee-item">Cocaine</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Heroin</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Methamphetamine</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Fentanyl</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">MDMA</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Opioids</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Ketamine</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Benzodiazepines</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item">Crystal Meth</span>
-    <span class="marquee-item accent">→</span>
-    <span class="marquee-item accent">500,000 DEATHS ANNUALLY</span>
-    <span class="marquee-item accent">→</span>
+<!-- TAPE -->
+<div class="tape">
+  <div class="tape-track" aria-hidden="true">
+    <span class="tape-item hi">500,000 deaths annually</span><span class="tape-item">·</span>
+    <span class="tape-item">Cocaine</span><span class="tape-item">·</span>
+    <span class="tape-item">Heroin</span><span class="tape-item">·</span>
+    <span class="tape-item">Methamphetamine</span><span class="tape-item">·</span>
+    <span class="tape-item">Fentanyl</span><span class="tape-item">·</span>
+    <span class="tape-item">MDMA</span><span class="tape-item">·</span>
+    <span class="tape-item">Opioids</span><span class="tape-item">·</span>
+    <span class="tape-item">Ketamine</span><span class="tape-item">·</span>
+    <span class="tape-item">Benzodiazepines</span><span class="tape-item">·</span>
+    <span class="tape-item hi">35 million affected worldwide</span><span class="tape-item">·</span>
+    <span class="tape-item hi">500,000 deaths annually</span><span class="tape-item">·</span>
+    <span class="tape-item">Cocaine</span><span class="tape-item">·</span>
+    <span class="tape-item">Heroin</span><span class="tape-item">·</span>
+    <span class="tape-item">Methamphetamine</span><span class="tape-item">·</span>
+    <span class="tape-item">Fentanyl</span><span class="tape-item">·</span>
+    <span class="tape-item">MDMA</span><span class="tape-item">·</span>
+    <span class="tape-item">Opioids</span><span class="tape-item">·</span>
+    <span class="tape-item">Ketamine</span><span class="tape-item">·</span>
+    <span class="tape-item">Benzodiazepines</span><span class="tape-item">·</span>
+    <span class="tape-item hi">35 million affected worldwide</span><span class="tape-item">·</span>
   </div>
 </div>
 
-<!-- ===== CHAPTER 1 ... THE SEDUCTION ===== -->
-<section id="chapter1">
-  <div class="ch1-left">
-    <div class="section-label reveal">Chapter 01</div>
-    <h2 class="ch1-heading reveal" style="transition-delay:0.1s">
-      The brain is<br><em>rewired</em> to<br>want more.
-    </h2>
-    <div class="pull-quote reveal" style="transition-delay:0.2s">
-      "Addiction isn't a moral failure. It's a hijacking ... of the brain's most primal survival system."
+<!-- §1 THE SEDUCTION -->
+<section id="s1">
+  <div class="s1-text">
+    <div class="label rv"><span>01</span> — The Seduction</div>
+    <h2 class="s1-h2 rv rv-d1">The brain is<br><em>rewired</em><br>to want more.</h2>
+    <div class="s1-pullquote rv rv-d2">
+      <p>"Addiction isn't a moral failure. It is a hijacking of the brain's most primal survival system."</p>
     </div>
-    <p class="ch1-body reveal" style="transition-delay:0.3s">
-      Every drug of abuse floods the brain's reward system with dopamine ... sometimes 2 to 10 times more than any natural pleasure. The brain, designed to repeat survival behaviours, begins to treat drug use as necessary for life itself.<br><br>
-      Over time, natural pleasure fades. Food, connection, joy ... they register as nothing. Only the substance remains vivid. This is not weakness. This is neurological capture.<br><br>
-      Understanding this is the first step to fighting it.
-    </p>
+    <div class="s1-body rv rv-d3">
+      <p>Every drug of abuse floods the brain's reward system with dopamine — sometimes 2 to 10 times more than any natural pleasure. The brain, designed to repeat survival behaviours, begins to treat drug use as necessary for life itself.</p>
+      <p>Over time, natural pleasure fades. Food, connection, joy — they register as nothing. Only the substance remains vivid. This is not weakness. This is neurological capture.</p>
+    </div>
   </div>
-  <div class="ch1-right">
-    <div class="brain-visual">
-      <canvas id="brain-canvas"></canvas>
-    </div>
-    <div class="ch1-chapter-num">01</div>
+  <div class="s1-visual">
+    <canvas id="brain-canvas"></canvas>
+    <div class="brain-caption rv">Hover to activate neurons · <span id="nstat">neurons idle</span></div>
   </div>
 </section>
 
-<!-- ===== CHAPTER 2 ... STATISTICS ===== -->
-<section id="chapter2">
-  <div class="section-label reveal">Chapter 02 ... The Numbers</div>
-  <h2 class="ch2-heading reveal" style="transition-delay:0.1s">
-    Numbers don't feel pain.<br>The people behind them do.
-  </h2>
-  <p class="ch2-sub reveal" style="transition-delay:0.2s">Every statistic below is a person. A family. A future that never happened.</p>
-
-  <div class="stats-grid">
-    <div class="stat-card reveal">
-      <span class="stat-number counter" data-target="500000">0</span>
-      <div class="stat-desc">People die from drug-related causes globally every single year</div>
-      <div class="stat-drug">WHO / 2023</div>
+<!-- §2 THE NUMBERS -->
+<section id="s2">
+  <div class="s2-header">
+    <div class="label rv"><span>02</span> — The Numbers</div>
+    <h2 class="s2-h2 rv rv-d1">Numbers don't<br>feel pain.<br>People do.</h2>
+    <p class="s2-deck rv rv-d2">Every figure below is a person. A family. A future that never happened.</p>
+  </div>
+  <div class="bento">
+    <div class="b-cell b-hero rv">
+      <span class="b-hero-num counter" data-target="500000" data-suffix="">0</span>
+      <p class="b-hero-desc">People die from drug-related causes globally every single year — one death every 63 seconds, around the clock, without pause.</p>
+      <div class="b-src">WHO · 2023</div>
     </div>
-    <div class="stat-card reveal" style="transition-delay:0.1s">
-      <span class="stat-number counter" data-target="35">0</span><span class="stat-number" style="font-size:40px">M</span>
-      <div class="stat-desc">People worldwide suffer from drug use disorders and cannot stop without help</div>
-      <div class="stat-drug">UNODC</div>
+    <div class="b-cell rv rv-d1">
+      <span class="b-num counter" data-target="35" data-suffix="M">0</span>
+      <p class="b-desc">People worldwide suffer from drug use disorders and cannot stop without help</p>
     </div>
-    <div class="stat-card reveal" style="transition-delay:0.2s">
-      <span class="stat-number">1 in 7</span>
-      <div class="stat-desc">Americans will develop a substance use disorder in their lifetime</div>
-      <div class="stat-drug">SAMHSA</div>
+    <div class="b-cell rv">
+      <span class="b-num">1 in 7</span>
+      <p class="b-desc">Americans will develop a substance use disorder in their lifetime</p>
     </div>
-    <div class="stat-card reveal" style="transition-delay:0.1s">
-      <span class="stat-number counter" data-target="80">0</span><span class="stat-number" style="font-size:40px">%</span>
-      <div class="stat-desc">Of people in prison for drug offences in developing nations are users, not dealers</div>
-      <div class="stat-drug">UNODC</div>
+    <div class="b-cell rv rv-d1">
+      <span class="b-num counter ice" data-target="80" data-suffix="%">0</span>
+      <p class="b-desc">Of those imprisoned for drug offences in developing nations are users — not traffickers</p>
     </div>
-    <div class="stat-card reveal" style="transition-delay:0.2s">
-      <span class="stat-number counter" data-target="13">0</span>
-      <div class="stat-desc">Average age when most people first try an illicit drug ... just a teenager</div>
-      <div class="stat-drug">NIH</div>
-    </div>
-    <div class="stat-card reveal" style="transition-delay:0.3s">
-      <span class="stat-number counter" data-target="10">0</span><span class="stat-number" style="font-size:40px">%</span>
-      <div class="stat-desc">Of those who need treatment for addiction actually receive it worldwide</div>
-      <div class="stat-drug">WHO</div>
+    <div class="b-cell rv rv-d2">
+      <span class="b-num counter ice" data-target="13" data-suffix="">0</span>
+      <p class="b-desc">Average age at first use of an illicit drug — just a child discovering a trap</p>
     </div>
   </div>
 </section>
 
-<!-- ===== CHAPTER 3 ... TIMELINE ===== -->
-<section id="chapter3">
-  <div class="section-label reveal">Chapter 03 ... The Descent</div>
-  <h2 class="timeline-heading reveal" style="transition-delay:0.1s">From first use to<br>full dependency.</h2>
-
+<!-- §3 THE DESCENT -->
+<section id="s3">
+  <div class="label rv"><span>03</span> — The Descent</div>
+  <h2 class="s2-h2 rv rv-d1" style="max-width:600px;margin-bottom:80px">From first use<br>to full dependency.</h2>
   <div class="timeline">
-    <div class="timeline-spine"></div>
-
-    <div class="timeline-item reveal">
-      <div class="tl-content" style="text-align:right;">
-        <div class="tl-time">First use ... Day 1</div>
-        <div class="tl-title">The Rush</div>
-        <div class="tl-body">Dopamine floods the reward pathway. The brain records this as an event more pleasurable than anything natural. A blueprint for craving is laid down immediately.</div>
-        <div class="tl-severity">
-          <div class="severity-bar">
-            <div class="severity-pip on"></div>
-            <div class="severity-pip"></div>
-            <div class="severity-pip"></div>
-            <div class="severity-pip"></div>
-            <div class="severity-pip"></div>
-          </div>
-          Risk Level
-        </div>
-      </div>
-      <div class="tl-dot-wrap"><div class="tl-dot active"></div></div>
-      <div class="tl-empty"></div>
-    </div>
-
-    <div class="timeline-item reveal">
-      <div class="tl-empty"></div>
-      <div class="tl-dot-wrap"><div class="tl-dot active"></div></div>
-      <div class="tl-content">
-        <div class="tl-time">Weeks 2–6</div>
-        <div class="tl-title">The Return</div>
-        <div class="tl-body">The brain begins downregulating dopamine receptors. Normal life feels grey. The drug is now chased not for highs, but to feel normal. Frequency increases.</div>
-        <div class="tl-severity">
-          <div class="severity-bar">
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-            <div class="severity-pip"></div>
-            <div class="severity-pip"></div>
-          </div>
-          Risk Level
-        </div>
+    <div class="t-item rv">
+      <div class="t-node"><div class="t-dot"></div></div>
+      <div class="t-content">
+        <div class="t-phase">First contact</div>
+        <div class="t-time">Day One</div>
+        <div class="t-title">The Rush</div>
+        <div class="t-body">Dopamine floods the reward pathway at 2–10× natural levels. The brain records this as the most pleasurable event it has known. A blueprint for craving is etched immediately into neural architecture.</div>
+        <div class="t-sev"><div class="t-pips"><div class="t-pip on"></div><div class="t-pip"></div><div class="t-pip"></div><div class="t-pip"></div><div class="t-pip"></div></div><div class="t-sev-lbl">Risk · Emerging</div></div>
       </div>
     </div>
-
-    <div class="timeline-item reveal">
-      <div class="tl-content" style="text-align:right;">
-        <div class="tl-time">Months 2–6</div>
-        <div class="tl-title">The Tolerance</div>
-        <div class="tl-body">Higher doses are required for the same effect. The prefrontal cortex ... seat of judgment and self-control ... begins losing grey matter. Decisions change.</div>
-        <div class="tl-severity">
-          <div class="severity-bar">
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-            <div class="severity-pip"></div>
-          </div>
-          Risk Level
-        </div>
-      </div>
-      <div class="tl-dot-wrap"><div class="tl-dot active"></div></div>
-      <div class="tl-empty"></div>
-    </div>
-
-    <div class="timeline-item reveal">
-      <div class="tl-empty"></div>
-      <div class="tl-dot-wrap"><div class="tl-dot active"></div></div>
-      <div class="tl-content">
-        <div class="tl-time">6 months – 2 years</div>
-        <div class="tl-title">The Dependency</div>
-        <div class="tl-body">Physical withdrawal begins without the substance. Relationships fracture. Employment suffers. The drug is no longer a choice ... it is a biological demand. Quitting alone becomes medically dangerous.</div>
-        <div class="tl-severity">
-          <div class="severity-bar">
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-            <div class="severity-pip on"></div>
-          </div>
-          Risk Level ... Critical
-        </div>
+    <div class="t-item rv">
+      <div class="t-node"><div class="t-dot"></div></div>
+      <div class="t-content">
+        <div class="t-phase">Adaptation</div>
+        <div class="t-time">Weeks 2 – 6</div>
+        <div class="t-title">The Return</div>
+        <div class="t-body">The brain downregulates dopamine receptors. Normal life turns grey. The drug is chased not for highs, but to feel normal. Frequency quietly increases. The trap begins closing.</div>
+        <div class="t-sev"><div class="t-pips"><div class="t-pip on"></div><div class="t-pip on"></div><div class="t-pip on"></div><div class="t-pip"></div><div class="t-pip"></div></div><div class="t-sev-lbl">Risk · Moderate</div></div>
       </div>
     </div>
-
-    <div class="timeline-item reveal">
-      <div class="tl-content" style="text-align:right;">
-        <div class="tl-time">Beyond</div>
-        <div class="tl-title">The Dissolution</div>
-        <div class="tl-body">The self, as it was known, is gone. Replaced entirely by the architecture of addiction. Without intervention, the average opioid-dependent person's life expectancy drops by 20 years.</div>
-        <div class="tl-severity">
-          <div class="severity-bar">
-            <div class="severity-pip on" style="background:#ff0000;"></div>
-            <div class="severity-pip on" style="background:#ff0000;"></div>
-            <div class="severity-pip on" style="background:#ff0000;"></div>
-            <div class="severity-pip on" style="background:#ff0000;"></div>
-            <div class="severity-pip on" style="background:#ff0000;"></div>
-          </div>
-          Survival Threat
-        </div>
-      </div>
-      <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:#ff0000;"></div></div>
-      <div class="tl-empty"></div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ===== CHAPTER 4 ... HEARTBEAT ===== -->
-<section id="chapter4">
-  <div class="section-label">Chapter 04 ... The Vital Signs</div>
-  <h2 class="ch4-title reveal"><span>YOUR</span> HEART<br>IS COUNTING</h2>
-  <p class="ch4-sub reveal" style="transition-delay:0.1s">Every drug rewrites the rhythm of the body. Click a substance to see what it does to your heart.</p>
-
-  <canvas id="ecg-canvas"></canvas>
-  <div class="ecg-label">ECG ... Status: <span id="ecg-status">NORMAL</span></div>
-
-  <div class="drugs-strip reveal" style="transition-delay:0.2s">
-    <div class="drug-tag" data-mode="normal">Normal</div>
-    <div class="drug-tag" data-mode="cocaine">Cocaine</div>
-    <div class="drug-tag" data-mode="heroin">Heroin / Opioids</div>
-    <div class="drug-tag" data-mode="meth">Meth</div>
-    <div class="drug-tag" data-mode="mdma">MDMA</div>
-    <div class="drug-tag" data-mode="fentanyl">Fentanyl</div>
-    <div class="drug-tag" data-mode="overdose">Overdose</div>
-  </div>
-</section>
-
-<!-- ===== CHAPTER 5 ... THE BODY ===== -->
-<section id="chapter5">
-  <div class="section-label reveal">Chapter 05 ... The Body's Damage</div>
-  <div class="body-grid">
-    <div class="body-figure reveal">
-      <h3 style="font-family:var(--font-display);font-size:28px;font-weight:900;letter-spacing:-0.03em;color:var(--white);margin-bottom:32px;text-transform:uppercase;line-height:1.1">What drugs<br>destroy inside.</h3>
-      <div style="position:relative;text-align:center;">
-        <!-- SVG body silhouette -->
-        <svg viewBox="0 0 200 450" width="100%" style="max-width:240px;filter:drop-shadow(0 0 30px rgba(192,57,43,0.2))">
-          <!-- Body outline -->
-          <path d="M100 20 C115 20 130 35 130 55 C130 75 120 90 100 95 C80 90 70 75 70 55 C70 35 85 20 100 20 Z" fill="none" stroke="#2a2730" stroke-width="1.5"/>
-          <!-- Head -->
-          <ellipse cx="100" cy="52" rx="28" ry="32" fill="none" stroke="#3a3545" stroke-width="1"/>
-          <!-- Torso -->
-          <path d="M72 95 L60 95 L50 200 L150 200 L140 95 L128 95 Z" fill="none" stroke="#3a3545" stroke-width="1"/>
-          <!-- Arms -->
-          <path d="M60 100 L30 180 L35 185 L65 108" fill="none" stroke="#3a3545" stroke-width="1"/>
-          <path d="M140 100 L170 180 L165 185 L135 108" fill="none" stroke="#3a3545" stroke-width="1"/>
-          <!-- Legs -->
-          <path d="M80 200 L70 350 L85 350 L100 250 L115 350 L130 350 L120 200 Z" fill="none" stroke="#3a3545" stroke-width="1"/>
-          <!-- Heart position -->
-          <circle cx="88" cy="130" r="8" fill="rgba(192,57,43,0.15)" stroke="rgba(192,57,43,0.4)" stroke-width="1"/>
-          <!-- Brain position -->
-          <circle cx="100" cy="45" r="10" fill="rgba(192,57,43,0.15)" stroke="rgba(192,57,43,0.4)" stroke-width="1"/>
-          <!-- Liver position -->
-          <circle cx="115" cy="155" r="7" fill="rgba(192,57,43,0.15)" stroke="rgba(192,57,43,0.4)" stroke-width="1"/>
-          <!-- Lungs position -->
-          <circle cx="80" cy="148" r="6" fill="rgba(192,57,43,0.15)" stroke="rgba(192,57,43,0.4)" stroke-width="1"/>
-          <circle cx="115" cy="142" r="6" fill="rgba(192,57,43,0.15)" stroke="rgba(192,57,43,0.4)" stroke-width="1"/>
-          <!-- Kidneys position -->
-          <circle cx="82" cy="168" r="5" fill="rgba(192,57,43,0.15)" stroke="rgba(192,57,43,0.4)" stroke-width="1"/>
-          <!-- Nose -->
-          <path d="M100 55 L97 68 L100 70 L103 68 Z" fill="none" stroke="#3a3545" stroke-width="0.8"/>
-          <!-- Eyes -->
-          <circle cx="92" cy="50" r="3" fill="none" stroke="#3a3545" stroke-width="0.8"/>
-          <circle cx="108" cy="50" r="3" fill="none" stroke="#3a3545" stroke-width="0.8"/>
-        </svg>
-        <!-- Organ indicators -->
-        <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">
-            <div style="width:8px;height:8px;border-radius:50%;background:var(--red-bright);"></div>
-            Affected organs ... scroll to explore
-          </div>
-        </div>
+    <div class="t-item rv">
+      <div class="t-node"><div class="t-dot"></div></div>
+      <div class="t-content">
+        <div class="t-phase">Neurological change</div>
+        <div class="t-time">Months 2 – 6</div>
+        <div class="t-title">The Tolerance</div>
+        <div class="t-body">Higher doses required for the same effect. The prefrontal cortex — seat of judgment — begins losing grey matter. Decisions change. The person you were begins to recede.</div>
+        <div class="t-sev"><div class="t-pips"><div class="t-pip on"></div><div class="t-pip on"></div><div class="t-pip on"></div><div class="t-pip on"></div><div class="t-pip"></div></div><div class="t-sev-lbl">Risk · High</div></div>
       </div>
     </div>
-
-    <div class="body-entries">
-
-      <div class="body-entry reveal" id="be-brain">
-        <div class="be-organ">Brain</div>
-        <div class="be-title">The command centre goes dark.</div>
-        <div class="be-body">
-          Long-term drug use causes measurable brain shrinkage. The prefrontal cortex ... responsible for impulse control, decision-making, and empathy ... loses grey matter. The hippocampus, which forms memories, shrinks. Dopamine receptors disappear as the brain tries to cope with overstimulation. The result: a brain that can no longer feel pleasure normally, cannot make good decisions, and cannot form new memories as effectively.<br><br>
-          Methamphetamine destroys up to 11% of neurons in the limbic system. Cocaine can trigger strokes in people as young as 19. Inhalants destroy the myelin sheath protecting neurons ... equivalent to burning your wiring.
-        </div>
-        <div class="be-drugs">
-          <span class="be-drug-chip">Meth</span>
-          <span class="be-drug-chip">Cocaine</span>
-          <span class="be-drug-chip">Heroin</span>
-          <span class="be-drug-chip">Alcohol</span>
-          <span class="be-drug-chip">Inhalants</span>
-        </div>
-      </div>
-
-      <div class="body-entry reveal" id="be-heart">
-        <div class="be-organ">Heart & Cardiovascular System</div>
-        <div class="be-title">The engine pushed past its limits.</div>
-        <div class="be-body">
-          Stimulants force the heart to beat faster and harder than it's designed to. Cocaine constricts blood vessels while simultaneously accelerating the heart ... the leading cause of cocaine-related deaths. Even a single use can trigger myocardial infarction in healthy individuals.<br><br>
-          Chronic meth use causes cardiomyopathy ... the heart muscle weakens and enlarges, losing its ability to pump effectively. MDMA causes a dangerous rise in blood pressure and temperature, sometimes leading to cardiac arrest. Opioids suppress the signal to breathe.
-        </div>
-        <div class="be-drugs">
-          <span class="be-drug-chip">Cocaine</span>
-          <span class="be-drug-chip">Meth</span>
-          <span class="be-drug-chip">MDMA</span>
-          <span class="be-drug-chip">Heroin</span>
-        </div>
-      </div>
-
-      <div class="body-entry reveal" id="be-liver">
-        <div class="be-organ">Liver</div>
-        <div class="be-title">The filter that cannot filter itself.</div>
-        <div class="be-body">
-          The liver is the body's primary detoxification organ, and drugs are exactly the toxins it's supposed to process. But at chronic levels, the liver is overwhelmed. Hepatitis C spreads through shared needles and infects 3 out of 4 long-term intravenous drug users. Cirrhosis ... irreversible scarring ... follows alcohol and drug abuse reliably.<br><br>
-          MDMA in high doses can cause acute liver failure in a single session. Acetaminophen, often mixed with opioids, destroys liver cells. Steroids cause peliosis hepatis ... blood-filled cysts that can rupture catastrophically.
-        </div>
-        <div class="be-drugs">
-          <span class="be-drug-chip">Alcohol</span>
-          <span class="be-drug-chip">MDMA</span>
-          <span class="be-drug-chip">Steroids</span>
-          <span class="be-drug-chip">Opioids</span>
-        </div>
-      </div>
-
-      <div class="body-entry reveal" id="be-lungs">
-        <div class="be-organ">Lungs & Respiratory System</div>
-        <div class="be-title">Every breath becomes harder.</div>
-        <div class="be-body">
-          Smoked drugs ... crack cocaine, meth, heroin ... destroy the tiny air sacs (alveoli) that transfer oxygen into the blood. Crack lung causes massive pulmonary hemorrhage. Smoking meth causes severe respiratory failure. Cannabis smoke, while less studied, contains many of the same carcinogens as tobacco.<br><br>
-          Opioids and benzodiazepines suppress the brainstem signal that tells you to breathe. In overdose, users simply stop breathing ... quietly, without pain, in their sleep.
-        </div>
-        <div class="be-drugs">
-          <span class="be-drug-chip">Crack Cocaine</span>
-          <span class="be-drug-chip">Heroin</span>
-          <span class="be-drug-chip">Meth</span>
-          <span class="be-drug-chip">Benzodiazepines</span>
-        </div>
-      </div>
-
-      <div class="body-entry reveal" id="be-skin">
-        <div class="be-organ">Skin & Appearance</div>
-        <div class="be-title">The face of addiction is unmistakable.</div>
-        <div class="be-body">
-          Meth users experience formication ... the hallucination of insects crawling under the skin ... leading to compulsive scratching that creates open wounds. The "meth mouth" phenomenon results from dry mouth combined with teeth grinding and poor hygiene; teeth blacken and crumble within months.<br><br>
-          Heroin users show collapsed, scarred veins. Track marks from intravenous injection become infected, leading to abscesses. Cocaine damages the nasal septum ... 10% of chronic users lose it entirely. Crack cocaine ages skin dramatically through vasoconstriction.
-        </div>
-        <div class="be-drugs">
-          <span class="be-drug-chip">Meth</span>
-          <span class="be-drug-chip">Heroin</span>
-          <span class="be-drug-chip">Cocaine</span>
-          <span class="be-drug-chip">Crack</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ===== CHAPTER 6 ... VOICES ===== -->
-<section id="chapter6">
-  <div class="voices-intro reveal">
-    <h2 class="vi-heading">Real Words.<br>Real People.</h2>
-    <p class="vi-sub">These are composites of survivor accounts from addiction recovery programs worldwide.</p>
-  </div>
-
-  <div class="testimonials">
-    <div class="testimonial reveal">
-      <div class="t-quote-mark">"</div>
-      <p class="t-body">I wasn't trying to get addicted. Nobody is. The first time felt like finding the answer to a question I didn't know I had. By the time I realized what was happening, my brain had already decided this was the most important thing in my life. More important than my daughter.</p>
-      <div class="t-attr">
-        Anonymous ... Recovery Year 3
-        <div class="t-drug">Opioids / Fentanyl</div>
+    <div class="t-item rv">
+      <div class="t-node"><div class="t-dot"></div></div>
+      <div class="t-content">
+        <div class="t-phase">Physical capture</div>
+        <div class="t-time">6 Months – 2 Years</div>
+        <div class="t-title">The Dependency</div>
+        <div class="t-body">Physical withdrawal begins without the substance. Relationships fracture. Employment collapses. The drug is no longer a choice — it is a biological demand. Quitting alone becomes medically dangerous.</div>
+        <div class="t-sev"><div class="t-pips"><div class="t-pip on"></div><div class="t-pip on"></div><div class="t-pip on"></div><div class="t-pip on"></div><div class="t-pip on"></div></div><div class="t-sev-lbl">Risk · Critical</div></div>
       </div>
     </div>
-    <div class="testimonial reveal" style="transition-delay:0.15s">
-      <div class="t-quote-mark">"</div>
-      <p class="t-body">People think it's a choice you keep making. It's not. After two years, the choice had already been made for me ... by the drug, by my brain chemistry, by the changes that happened without my permission. Sobriety meant learning to want to be alive again.</p>
-      <div class="t-attr">
-        Anonymous ... Recovery Year 7
-        <div class="t-drug">Methamphetamine</div>
-      </div>
-    </div>
-    <div class="testimonial reveal" style="transition-delay:0.3s">
-      <div class="t-quote-mark">"</div>
-      <p class="t-body">I lost my job, my house, my marriage. At my worst, I told myself I was fine ... that I was different, that I could stop anytime. I believed it completely. The drug made sure I believed it. That's the cruelty of it.</p>
-      <div class="t-attr">
-        Anonymous ... Recovery Year 11
-        <div class="t-drug">Cocaine</div>
+    <div class="t-item rv">
+      <div class="t-node"><div class="t-dot" style="border-color:rgba(200,0,0,.45)"></div></div>
+      <div class="t-content">
+        <div class="t-phase" style="color:#b00">Terminal spiral</div>
+        <div class="t-time">Beyond</div>
+        <div class="t-title">The Dissolution</div>
+        <div class="t-body">The self, as it was known, is gone. Replaced entirely by the architecture of addiction. Without intervention, the average opioid-dependent person's life expectancy drops by 20 years. This is the name we gave to what remains.</div>
+        <div class="t-sev"><div class="t-pips"><div class="t-pip red"></div><div class="t-pip red"></div><div class="t-pip red"></div><div class="t-pip red"></div><div class="t-pip red"></div></div><div class="t-sev-lbl" style="color:rgba(180,0,0,.5)">Survival threat</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== CHAPTER 7 ... CALL TO ACTION ===== -->
-<section id="chapter7">
-  <div class="call-label reveal">You are not alone</div>
-  <h2 class="call-title reveal" style="transition-delay:0.1s">
-    The way<br>out exists.
-  </h2>
-  <p class="call-sub reveal" style="transition-delay:0.2s">
-    Recovery is not weakness. It is the hardest, bravest thing a person can do. Reaching out is the first step ... and you only need to take it once.
-  </p>
-
-  <div class="help-cards reveal" style="transition-delay:0.3s">
-    <div class="help-card">
-      <div class="hc-label">USA ... 24/7 Helpline</div>
-      <div class="hc-name">SAMHSA</div>
-      <div class="hc-num">1-800-662-4357</div>
+<!-- §4 HEARTBEAT -->
+<section id="s4">
+  <div class="s4-header">
+    <div class="label rv" style="justify-content:center"><span>04</span> — Vital Signs</div>
+    <h2 class="s4-h2 rv rv-d1"><em>Your heart</em><br>is counting.</h2>
+    <p class="s4-deck rv rv-d2">Select a substance to see how it rewrites your cardiac rhythm.</p>
+  </div>
+  <div class="ecg-panel rv rv-d2">
+    <div class="ecg-head">
+      <div>
+        <div class="ecg-bpm-lbl">Beats per minute</div>
+        <div class="ecg-bpm-val" id="ecg-bpm">72</div>
+      </div>
+      <div class="ecg-status" id="ecg-status">Normal Sinus</div>
     </div>
-    <div class="help-card">
-      <div class="hc-label">UK ... National</div>
-      <div class="hc-name">Talk to Frank</div>
-      <div class="hc-num">0300 123 6600</div>
-    </div>
-    <div class="help-card">
-      <div class="hc-label">India ... National</div>
-      <div class="hc-name">iCall / NIMHANS</div>
-      <div class="hc-num">9152987821</div>
-    </div>
-    <div class="help-card">
-      <div class="hc-label">Australia</div>
-      <div class="hc-name">DirectLine</div>
-      <div class="hc-num">1800 888 236</div>
+    <canvas id="ecg-canvas"></canvas>
+    <div class="drug-btns">
+      <button class="db active" data-mode="normal">Normal</button>
+      <button class="db" data-mode="cocaine">Cocaine</button>
+      <button class="db" data-mode="heroin">Heroin</button>
+      <button class="db" data-mode="meth">Meth</button>
+      <button class="db" data-mode="mdma">MDMA</button>
+      <button class="db" data-mode="fentanyl">Fentanyl</button>
+      <button class="db" data-mode="overdose">⚠ Overdose</button>
     </div>
   </div>
-
-  <p class="call-cta reveal" style="transition-delay:0.4s">
-    Or search: <strong>Drug helpline [your country]</strong> ... help is always reachable.
-  </p>
 </section>
 
-<!-- FOOTER -->
+<!-- §5 THE BODY -->
+<section id="s5">
+  <div class="label rv"><span>05</span> — What Drugs Destroy</div>
+  <div class="body-cols">
+    <div>
+      <h3 class="body-col-title rv">Brain &amp; Heart</h3>
+      <div class="oe rv">
+        <div class="oe-tag">Brain</div>
+        <div class="oe-title">The command centre goes dark.</div>
+        <div class="oe-body">Long-term drug use causes measurable brain shrinkage. The prefrontal cortex loses grey matter, the hippocampus shrinks, and dopamine receptors disappear. Meth destroys up to 11% of neurons in the limbic system. Cocaine can trigger strokes in people as young as 19.</div>
+      </div>
+      <div class="oe rv rv-d1">
+        <div class="oe-tag">Heart</div>
+        <div class="oe-title">The engine pushed past its limits.</div>
+        <div class="oe-body">Cocaine constricts blood vessels while accelerating the heart simultaneously — the leading cause of cocaine-related death. Even a single use can trigger cardiac arrest in healthy individuals. Chronic meth causes cardiomyopathy: the heart weakens until it can no longer pump.</div>
+      </div>
+    </div>
+    <div>
+      <h3 class="body-col-title rv" style="transition-delay:.15s">Lungs, Liver &amp; Skin</h3>
+      <div class="oe rv rv-d2">
+        <div class="oe-tag">Liver</div>
+        <div class="oe-title">The filter that cannot filter itself.</div>
+        <div class="oe-body">Hepatitis C infects 3 in 4 long-term intravenous users. Cirrhosis follows reliably. MDMA in high doses can cause acute liver failure in a single session — the damage invisible until it becomes catastrophic.</div>
+      </div>
+      <div class="oe rv rv-d3">
+        <div class="oe-tag">Lungs</div>
+        <div class="oe-title">Every breath becomes harder.</div>
+        <div class="oe-body">In overdose, opioids suppress the brainstem signal that tells you to breathe. Users simply stop — quietly, without pain, in their sleep. This is how most overdose deaths occur.</div>
+      </div>
+      <div class="oe rv rv-d3">
+        <div class="oe-tag">Skin</div>
+        <div class="oe-title">The face of addiction is unmistakable.</div>
+        <div class="oe-body">Meth causes formication — the hallucination of insects under the skin — leading to compulsive scratching and open wounds. "Meth mouth" destroys teeth within months. These changes are irreversible.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §6 VOICES -->
+<section id="s6">
+  <div class="label rv"><span>06</span> — Real Words</div>
+  <h2 class="s6-h2 rv rv-d1">Voices<br>from<br>the other<br>side.</h2>
+  <div class="voices-grid">
+    <div class="voice rv">
+      <div class="voice-qmark">"</div>
+      <p class="voice-body">I wasn't trying to get addicted. Nobody is. The first time felt like finding the answer to a question I didn't know I had. By the time I realized what was happening, my brain had already decided this was the most important thing in my life. More important than my daughter.</p>
+      <div class="voice-attr">Anonymous · Recovery Year 3</div>
+      <div class="voice-drug">Opioids / Fentanyl</div>
+    </div>
+    <div class="voice rv rv-d2">
+      <div class="voice-qmark">"</div>
+      <p class="voice-body">People think it's a choice you keep making. It's not. After two years, the choice had already been made for me — by the drug, by my brain chemistry, by changes that happened without my permission. Sobriety meant learning to want to be alive again.</p>
+      <div class="voice-attr">Anonymous · Recovery Year 7</div>
+      <div class="voice-drug">Methamphetamine</div>
+    </div>
+    <div class="voice rv rv-d3">
+      <div class="voice-qmark">"</div>
+      <p class="voice-body">I lost my job, my house, my marriage. At my worst, I told myself I was fine — that I could stop anytime. I believed it completely. The drug made sure I believed it. That's the cruelty of it.</p>
+      <div class="voice-attr">Anonymous · Recovery Year 11</div>
+      <div class="voice-drug">Cocaine</div>
+    </div>
+  </div>
+</section>
+
+<!-- §7 CTA -->
+<section id="s7">
+  <canvas id="cta-ecg"></canvas>
+  <p class="cta-pre rv">You are not alone in this</p>
+  <h2 class="cta-h2 rv rv-d1">The<br>way out<br>exists.</h2>
+  <p class="cta-deck rv rv-d2">Recovery is not weakness. It is the hardest, bravest thing a person can do. You only need to reach out once.</p>
+  <div class="help-cards rv rv-d3">
+    <div class="hc"><div class="hc-region">USA · 24 / 7</div><div class="hc-name">SAMHSA</div><div class="hc-num">1-800-662-4357</div></div>
+    <div class="hc"><div class="hc-region">UK · National</div><div class="hc-name">Talk to Frank</div><div class="hc-num">0300 123 6600</div></div>
+    <div class="hc"><div class="hc-region">India · National</div><div class="hc-name">iCall / NIMHANS</div><div class="hc-num">9152987821</div></div>
+    <div class="hc"><div class="hc-region">Australia</div><div class="hc-name">DirectLine</div><div class="hc-num">1800 888 236</div></div>
+  </div>
+  <p class="cta-note rv rv-d3">Search: <strong>Drug helpline [your country]</strong> — help is always reachable.</p>
+</section>
+
 <footer>
-  <div class="footer-brand">Dissolution ... 2024</div>
-  <div class="footer-disclaimer">This site is an educational resource. Statistics sourced from WHO, UNODC, SAMHSA, and NIH. If you or someone you know needs help, please contact a medical professional or helpline.</div>
-  <div class="footer-brand" style="text-align:right;font-weight:200">Knowledge is prevention.</div>
+  <div class="f-brand">Dissolution · 2026</div>
+  <div class="f-disc">Educational resource. Statistics from WHO, UNODC, SAMHSA, and NIH. If you or someone you know needs help, please contact a medical professional or helpline immediately.</div>
+  <div class="f-right">Knowledge is prevention.</div>
 </footer>
 
 <script>
-
-// ......... CURSOR .........
-const cursor = document.getElementById('cursor');
-const cursorRing = document.getElementById('cursorRing');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animCursor() {
-  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-  cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
-document.querySelectorAll('a, button, .drug-tag, .help-card, .stat-card, .testimonial').forEach(el => {
-  el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2.5)'; });
-  el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; });
+/* ── CURSOR ── */
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';});
+document.querySelectorAll('a,button,.hc,.voice,.b-cell,.db').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
 });
 
-// ......... LOADER .........
-const loaderBar = document.getElementById('loaderBar');
-const loaderNum = document.getElementById('loaderNum');
-const loader = document.getElementById('loader');
-let progress = 0;
-const loadInterval = setInterval(() => {
-  progress += Math.random() * 4 + 1;
-  if (progress >= 100) { progress = 100; clearInterval(loadInterval); setTimeout(() => { loader.classList.add('hidden'); }, 400); }
-  loaderBar.style.width = progress + '%';
-  loaderNum.textContent = Math.floor(progress);
-}, 60);
+/* ── LOADER ── */
+const ldN=document.getElementById('ld-n'),ldB=document.getElementById('ld-b'),ldr=document.getElementById('loader');
+let p=0;
+const li=setInterval(()=>{
+  p+=Math.random()*5+.8;
+  if(p>=100){p=100;clearInterval(li);setTimeout(()=>ldr.classList.add('gone'),400);}
+  ldB.style.width=p+'%';ldN.textContent=Math.floor(p);
+},55);
 
-// ......... HERO CANVAS ... particle field .........
-const heroCanvas = document.getElementById('hero-canvas');
-const hCtx = heroCanvas.getContext('2d');
-let hW, hH, particles = [];
-
-function resizeHero() {
-  hW = heroCanvas.width = heroCanvas.offsetWidth;
-  hH = heroCanvas.height = heroCanvas.offsetHeight;
+/* ── HERO CANVAS ── sparse drifting particles */
+const hcv=document.getElementById('hero-canvas'),hct=hcv.getContext('2d');
+function rzH(){hcv.width=hcv.offsetWidth;hcv.height=hcv.offsetHeight;}
+rzH();window.addEventListener('resize',rzH);
+class Mote{
+  constructor(){this.reset();}
+  reset(){this.x=Math.random()*hcv.width;this.y=Math.random()*hcv.height;this.vx=(Math.random()-.5)*.28;this.vy=(Math.random()-.5)*.18;this.r=Math.random()*1.2+.3;this.life=Math.random();this.dl=Math.random()*.008+.003;this.isRed=Math.random()>.85;this.op=0;}
+  step(){this.x+=this.vx;this.y+=this.vy;this.life+=this.dl;this.op=this.life<.5?this.life*2:(1-this.life)*2;if(this.life>=1)this.reset();}
+  draw(){hct.beginPath();hct.arc(this.x,this.y,this.r,0,Math.PI*2);hct.fillStyle=this.isRed?`rgba(181,43,43,${this.op*.55})`:`rgba(100,90,130,${this.op*.25})`;hct.fill();}
 }
-resizeHero();
-window.addEventListener('resize', resizeHero);
+const motes=[];for(let i=0;i<160;i++)motes.push(new Mote());
+let hmx=0,hmy=0;
+document.addEventListener('mousemove',e=>{hmx=e.clientX;hmy=e.clientY;});
+(function aH(){
+  hct.fillStyle='rgba(9,9,15,.18)';hct.fillRect(0,0,hcv.width,hcv.height);
+  motes.forEach(m=>{
+    const dx=m.x-hmx,dy=m.y-hmy,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<110){hct.beginPath();hct.moveTo(m.x,m.y);hct.lineTo(hmx,hmy);hct.strokeStyle=`rgba(181,43,43,${(1-d/110)*.1})`;hct.lineWidth=.4;hct.stroke();}
+    m.step();m.draw();
+  });
+  requestAnimationFrame(aH);
+})();
+const hN=document.getElementById('hero-n');
+let hv=0;setTimeout(()=>{(function t(){if(hv<1370){hv+=Math.ceil((1370-hv)/28);hN.textContent=hv.toLocaleString();setTimeout(t,18);}else hN.textContent='1,370+';})()} ,2600);
 
-class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * hW;
-    this.y = Math.random() * hH;
-    this.size = Math.random() * 1.5 + 0.3;
-    this.speedX = (Math.random() - 0.5) * 0.4;
-    this.speedY = (Math.random() - 0.5) * 0.4;
-    this.life = Math.random();
-    this.maxLife = Math.random() * 0.015 + 0.003;
-    this.color = Math.random() > 0.85 ? `rgba(192,57,43,` : `rgba(100,90,120,`;
-    this.opacity = 0;
-  }
-  update() {
-    this.x += this.speedX; this.y += this.speedY;
-    this.life += this.maxLife;
-    if (this.life < 0.5) this.opacity = this.life * 2;
-    else this.opacity = (1 - this.life) * 2;
-    if (this.life >= 1 || this.x < 0 || this.x > hW || this.y < 0 || this.y > hH) this.reset();
-  }
-  draw() {
-    hCtx.beginPath();
-    hCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    hCtx.fillStyle = this.color + this.opacity + ')';
-    hCtx.fill();
-  }
-}
-
-for (let i = 0; i < 200; i++) particles.push(new Particle());
-
-let mouseX = hW/2, mouseY = hH/2;
-document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-
-function animHero() {
-  hCtx.fillStyle = 'rgba(5,5,8,0.25)';
-  hCtx.fillRect(0, 0, hW, hH);
-
-  // Draw connections near mouse
-  particles.forEach(p => {
-    const dx = p.x - mouseX, dy = p.y - mouseY;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    if (dist < 120) {
-      hCtx.beginPath();
-      hCtx.moveTo(p.x, p.y);
-      hCtx.lineTo(mouseX, mouseY);
-      hCtx.strokeStyle = `rgba(192,57,43,${(1 - dist/120) * 0.15})`;
-      hCtx.lineWidth = 0.5;
-      hCtx.stroke();
+/* ── BRAIN CANVAS — THE STAR ── */
+const bcv=document.getElementById('brain-canvas'),bct=bcv.getContext('2d');
+const nstat=document.getElementById('nstat');
+function rzB(){bcv.width=bcv.offsetWidth;bcv.height=bcv.offsetHeight;}
+rzB();window.addEventListener('resize',rzB);
+const N=[];
+for(let i=0;i<90;i++)N.push({x:Math.random()*100,y:Math.random()*100,vx:(Math.random()-.5)*.045,vy:(Math.random()-.5)*.045,r:Math.random()*2+.8,ph:Math.random()*Math.PI*2,active:false,ft:0,links:[]});
+N.forEach((n,i)=>N.forEach((m,j)=>{if(i!==j&&Math.hypot(n.x-m.x,n.y-m.y)<19)n.links.push(j);}));
+let bmx=-1,bmy=-1,bhov=false,bSig=0;
+bcv.addEventListener('mousemove',e=>{
+  const r=bcv.getBoundingClientRect();
+  bmx=(e.clientX-r.left)/bcv.width*100;
+  bmy=(e.clientY-r.top)/bcv.height*100;
+  bhov=true;
+  N.forEach(n=>{
+    if(Math.hypot(n.x-bmx,n.y-bmy)<15&&!n.active){
+      n.active=true;n.ft=0;
+      n.links.forEach(j=>setTimeout(()=>{N[j].active=true;N[j].ft=0;},80+Math.random()*120));
     }
-    p.update(); p.draw();
-  });
-  requestAnimationFrame(animHero);
-}
-animHero();
-
-// ......... HERO COUNTER .........
-const heroCounter = document.getElementById('hero-counter');
-let heroVal = 0;
-const heroTarget = 1370; // deaths per day approx
-function tickHero() {
-  if (heroVal < heroTarget) {
-    heroVal += Math.ceil((heroTarget - heroVal) / 40);
-    heroCounter.textContent = heroVal.toLocaleString();
-    setTimeout(tickHero, 30);
-  } else heroCounter.textContent = heroTarget.toLocaleString() + '+';
-}
-setTimeout(tickHero, 2000);
-
-// ......... BRAIN CANVAS .........
-const brainCanvas = document.getElementById('brain-canvas');
-const bCtx = brainCanvas.getContext('2d');
-
-function resizeBrain() {
-  brainCanvas.width = brainCanvas.offsetWidth;
-  brainCanvas.height = brainCanvas.offsetHeight;
-}
-resizeBrain();
-window.addEventListener('resize', resizeBrain);
-
-const neurons = [];
-for (let i = 0; i < 60; i++) {
-  neurons.push({
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
-    speedX: (Math.random() - 0.5) * 0.08,
-    speedY: (Math.random() - 0.5) * 0.08,
-    active: Math.random() > 0.6,
-    pulsePhase: Math.random() * Math.PI * 2,
-    connections: []
-  });
-}
-neurons.forEach((n, i) => {
-  neurons.forEach((m, j) => {
-    if (i !== j && Math.hypot(n.x - m.x, n.y - m.y) < 22) n.connections.push(j);
   });
 });
-
-let brainTime = 0;
-function animBrain() {
-  const bW = brainCanvas.width, bH = brainCanvas.height;
-  bCtx.clearRect(0, 0, bW, bH);
-
-  // Background glow
-  const grad = bCtx.createRadialGradient(bW/2, bH/2, 0, bW/2, bH/2, bW/2);
-  grad.addColorStop(0, 'rgba(30,10,10,0.4)');
-  grad.addColorStop(1, 'rgba(5,5,8,0)');
-  bCtx.fillStyle = grad;
-  bCtx.fillRect(0, 0, bW, bH);
-
-  const scaleX = bW / 100, scaleY = bH / 100;
-  brainTime += 0.012;
-
-  neurons.forEach((n, i) => {
-    n.x += n.speedX; n.y += n.speedY;
-    if (n.x < 5 || n.x > 95) n.speedX *= -1;
-    if (n.y < 5 || n.y > 95) n.speedY *= -1;
-    n.pulsePhase += 0.04;
-    const pulse = (Math.sin(n.pulsePhase) + 1) / 2;
-
-    // Draw connections
-    n.connections.forEach(j => {
-      const m = neurons[j];
-      const signal = (Math.sin(brainTime * 3 + i * 0.5) + 1) / 2;
-      bCtx.beginPath();
-      bCtx.moveTo(n.x * scaleX, n.y * scaleY);
-      bCtx.lineTo(m.x * scaleX, m.y * scaleY);
-      bCtx.strokeStyle = n.active
-        ? `rgba(192,57,43,${signal * 0.35})`
-        : `rgba(50,40,70,0.2)`;
-      bCtx.lineWidth = n.active ? signal * 1.2 : 0.4;
-      bCtx.stroke();
+bcv.addEventListener('mouseleave',()=>bhov=false);
+setInterval(()=>{if(!bhov){const idx=Math.floor(Math.random()*N.length);N[idx].active=true;N[idx].ft=0;}},800);
+(function aB(){
+  const W=bcv.width,H=bcv.height;
+  bct.clearRect(0,0,W,H);
+  const bg=bct.createRadialGradient(W*.5,H*.5,0,W*.5,H*.5,W*.55);
+  bg.addColorStop(0,'rgba(20,5,5,.35)');bg.addColorStop(1,'rgba(9,9,15,0)');
+  bct.fillStyle=bg;bct.fillRect(0,0,W,H);
+  const sx=W/100,sy=H/100;
+  bSig+=.014;
+  let ac=0;
+  N.forEach((n,i)=>{
+    n.x+=n.vx;n.y+=n.vy;
+    if(n.x<3||n.x>97)n.vx*=-1;if(n.y<3||n.y>97)n.vy*=-1;
+    n.ph+=.03;
+    if(n.active){ac++;n.ft+=.018;if(n.ft>1){n.active=false;n.ft=0;}}
+    const pulse=(Math.sin(n.ph)+1)/2;
+    const fire=n.active?Math.sin(n.ft*Math.PI):0;
+    n.links.forEach(j=>{
+      const m=N[j];
+      const sig=(n.active||m.active)?((Math.sin(bSig*3+i*.4)+1)/2*.55):.06;
+      bct.beginPath();bct.moveTo(n.x*sx,n.y*sy);bct.lineTo(m.x*sx,m.y*sy);
+      bct.strokeStyle=(n.active||m.active)?`rgba(181,43,43,${sig})`:`rgba(50,40,75,${sig})`;
+      bct.lineWidth=(n.active||m.active)?fire*1.8+.3:.25;bct.stroke();
     });
-
-    // Draw neuron
-    const grd = bCtx.createRadialGradient(n.x*scaleX, n.y*scaleY, 0, n.x*scaleX, n.y*scaleY, n.size * 3);
-    if (n.active) {
-      grd.addColorStop(0, `rgba(231,76,60,${0.6 + pulse*0.4})`);
-      grd.addColorStop(1, 'rgba(192,57,43,0)');
-    } else {
-      grd.addColorStop(0, `rgba(80,65,110,0.5)`);
-      grd.addColorStop(1, 'rgba(50,40,80,0)');
-    }
-    bCtx.beginPath();
-    bCtx.arc(n.x*scaleX, n.y*scaleY, n.size + (n.active ? pulse*2 : 0), 0, Math.PI*2);
-    bCtx.fillStyle = grd;
-    bCtx.fill();
+    const grd=bct.createRadialGradient(n.x*sx,n.y*sy,0,n.x*sx,n.y*sy,(n.r+fire*3)*4);
+    if(n.active){grd.addColorStop(0,`rgba(214,51,51,${.55+fire*.45})`);grd.addColorStop(.4,`rgba(181,43,43,${fire*.3})`);grd.addColorStop(1,'rgba(181,43,43,0)');}
+    else{grd.addColorStop(0,`rgba(65,50,100,${.35+pulse*.2})`);grd.addColorStop(1,'rgba(40,30,70,0)');}
+    bct.beginPath();bct.arc(n.x*sx,n.y*sy,n.r+(n.active?fire*3.5:pulse*.5),0,Math.PI*2);bct.fillStyle=grd;bct.fill();
   });
+  if(nstat){if(ac>15){nstat.textContent=ac+' neurons firing';nstat.style.color='#d63333';}else if(ac>0){nstat.textContent=ac+' neurons active';nstat.style.color='rgba(214,51,51,.7)';}else{nstat.textContent='neurons idle';nstat.style.color='rgba(240,236,227,.2)';}}
+  requestAnimationFrame(aB);
+})();
 
-  requestAnimationFrame(animBrain);
-}
-animBrain();
-
-// ......... SCROLL REVEALS .........
-const reveals = document.querySelectorAll('.reveal');
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-reveals.forEach(r => revealObs.observe(r));
-
-// ......... STAT COUNTERS .........
-const counters = document.querySelectorAll('.counter');
-const counterObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting && !e.target.dataset.done) {
-      e.target.dataset.done = 'true';
-      const target = parseInt(e.target.dataset.target);
-      let val = 0;
-      const step = target / 60;
-      const t = setInterval(() => {
-        val = Math.min(val + step, target);
-        e.target.textContent = Math.floor(val).toLocaleString();
-        if (val >= target) { clearInterval(t); e.target.textContent = target.toLocaleString(); }
-      }, 25);
+/* ── REVEALS ── */
+const rvObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');}),{threshold:.1,rootMargin:'0px 0px -48px 0px'});
+document.querySelectorAll('.rv').forEach(el=>rvObs.observe(el));
+const tObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('lit');}),{threshold:.55});
+document.querySelectorAll('.t-item').forEach(el=>tObs.observe(el));
+const ctrObs=new IntersectionObserver(e=>{
+  e.forEach(x=>{
+    if(x.isIntersecting&&!x.target.dataset.done){
+      x.target.dataset.done='1';
+      const tg=parseInt(x.target.dataset.target),sf=x.target.dataset.suffix||'';
+      let v=0;const st=tg/70;
+      const ti=setInterval(()=>{v=Math.min(v+st,tg);x.target.textContent=Math.floor(v).toLocaleString()+sf;if(v>=tg)clearInterval(ti);},22);
     }
   });
-}, { threshold: 0.5 });
-counters.forEach(c => counterObs.observe(c));
+},{threshold:.5});
+document.querySelectorAll('.counter').forEach(c=>ctrObs.observe(c));
 
-// ......... ECG CANVAS .........
-const ecgCanvas = document.getElementById('ecg-canvas');
-const eCtx = ecgCanvas.getContext('2d');
-const ecgStatus = document.getElementById('ecg-status');
-let ecgMode = 'normal';
-let ecgX = 0;
-let ecgData = [];
-const ECG_W = () => ecgCanvas.width;
-const ECG_H = () => ecgCanvas.height;
-
-function resizeECG() {
-  ecgCanvas.width = ecgCanvas.offsetWidth;
-  ecgCanvas.height = ecgCanvas.offsetHeight;
-  ecgData = new Array(ECG_W()).fill(ECG_H() / 2);
-  ecgX = 0;
-}
-resizeECG();
-window.addEventListener('resize', resizeECG);
-
-const ecgModes = {
-  normal: { speed: 2, amp: 30, beatFreq: 70, noise: 1, color: '#00cc44', label: 'NORMAL', variant: 'sinus' },
-  cocaine: { speed: 4, amp: 55, beatFreq: 130, noise: 5, color: '#ffaa00', label: 'COCAINE ... TACHYCARDIA', variant: 'tachy' },
-  heroin: { speed: 1, amp: 18, beatFreq: 48, noise: 1.5, color: '#aaaaff', label: 'HEROIN ... BRADYCARDIA', variant: 'brady' },
-  meth: { speed: 5, amp: 65, beatFreq: 160, noise: 12, color: '#ff6600', label: 'METH ... ARRHYTHMIA', variant: 'arrhythmia' },
-  mdma: { speed: 3.5, amp: 45, beatFreq: 120, noise: 8, color: '#ff00aa', label: 'MDMA ... ELEVATED', variant: 'elevated' },
-  fentanyl: { speed: 0.7, amp: 12, beatFreq: 36, noise: 2, color: '#8888cc', label: 'FENTANYL ... SUPPRESSED', variant: 'suppressed' },
-  overdose: { speed: 0, amp: 2, beatFreq: 0, noise: 0.5, color: '#cc0000', label: '⚠ FLATLINE ... OVERDOSE', variant: 'flat' },
+/* ── ECG ── */
+const ecv=document.getElementById('ecg-canvas'),ect=ecv.getContext('2d');
+let ecData=[];
+function rzE(){ecv.width=ecv.offsetWidth;ecv.height=ecv.offsetHeight;ecData=new Array(ecv.width).fill(ecv.height/2);}
+rzE();window.addEventListener('resize',rzE);
+const EM={
+  normal:  {bpm:72,  amp:34,spd:2.2,noise:1,  col:'#3dbb6e',lbl:'Normal Sinus',v:'s'},
+  cocaine: {bpm:138, amp:60,spd:4.4,noise:6,  col:'#e8a020',lbl:'Cocaine · Tachycardia',v:'s'},
+  heroin:  {bpm:44,  amp:20,spd:1.0,noise:2,  col:'#7a9fd4',lbl:'Heroin · Bradycardia',v:'s'},
+  meth:    {bpm:172, amp:72,spd:5.8,noise:15, col:'#e05c20',lbl:'Meth · Arrhythmia',v:'a'},
+  mdma:    {bpm:120, amp:50,spd:3.9,noise:10, col:'#c050d8',lbl:'MDMA · Elevated HR',v:'s'},
+  fentanyl:{bpm:30,  amp:13,spd:.65,noise:2.5,col:'#6680b8',lbl:'Fentanyl · Suppressed',v:'s'},
+  overdose:{bpm:0,   amp:3, spd:0,  noise:.7, col:'#cc1111',lbl:'⚠ Flatline · Overdose',v:'f'},
 };
-
-document.querySelectorAll('.drug-tag').forEach(tag => {
-  tag.addEventListener('click', () => {
-    ecgMode = tag.dataset.mode;
-    const cfg = ecgModes[ecgMode];
-    ecgStatus.textContent = cfg.label;
-    ecgStatus.style.color = cfg.color;
-    document.querySelectorAll('.drug-tag').forEach(t => t.style.outline = 'none');
-    tag.style.outline = `2px solid ${cfg.color}`;
-    if (ecgMode === 'overdose') ecgStatus.style.animation = 'blink 0.5s infinite';
-    else ecgStatus.style.animation = 'none';
+let em='normal',eT=0;
+document.querySelectorAll('.db').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    em=btn.dataset.mode;const c=EM[em];
+    document.getElementById('ecg-bpm').textContent=c.bpm||'---';
+    document.getElementById('ecg-bpm').style.color=c.col;
+    document.getElementById('ecg-status').textContent=c.lbl;
+    document.getElementById('ecg-status').style.color=c.col;
+    document.getElementById('ecg-status').style.borderColor=c.col+'66';
+    document.querySelectorAll('.db').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
   });
 });
-
-let ecgT = 0;
-function generateECGPoint(mode) {
-  const cfg = ecgModes[mode];
-  const noise = (Math.random() - 0.5) * cfg.noise;
-  const bpm = cfg.beatFreq;
-  const beatPeriod = bpm > 0 ? 60 / bpm * 60 : Infinity; // frames per beat
-
-  if (mode === 'flat') return ECG_H() / 2 + noise * 3;
-
-  const phase = (ecgT % beatPeriod) / beatPeriod;
-  let y = 0;
-  if (mode === 'arrhythmia') {
-    const irregularPhase = (ecgT % (beatPeriod * (0.8 + Math.random() * 0.6))) / beatPeriod;
-    if (irregularPhase < 0.05) y = -cfg.amp * 0.3;
-    else if (irregularPhase < 0.1) y = cfg.amp * 1.1;
-    else if (irregularPhase < 0.12) y = -cfg.amp * 0.4;
-    else if (irregularPhase < 0.18) y = cfg.amp * 0.3;
-    else y = 0;
-  } else {
-    if (phase < 0.05) y = -cfg.amp * 0.2;
-    else if (phase < 0.1) y = cfg.amp;
-    else if (phase < 0.13) y = -cfg.amp * 0.35;
-    else if (phase < 0.2) y = cfg.amp * 0.3;
-    else y = 0;
+function gP(mode){
+  const c=EM[mode],H=ecv.height,ns=(Math.random()-.5)*c.noise;
+  if(mode==='overdose')return H/2+ns*3;
+  const per=60/c.bpm*54,ph=(eT%per)/per;
+  let y=0;
+  if(c.v==='a'){
+    const ip=(eT%(per*(0.75+Math.random()*.6)))/per;
+    if(ip<.04)y=-c.amp*.25;else if(ip<.09)y=c.amp*1.1;else if(ip<.11)y=-c.amp*.42;else if(ip<.18)y=c.amp*.32;
+  }else{
+    if(ph<.04)y=-c.amp*.2;else if(ph<.09)y=c.amp;else if(ph<.12)y=-c.amp*.38;else if(ph<.2)y=c.amp*.28;
   }
-  return ECG_H() / 2 - y + noise;
+  return H/2-y+ns;
 }
+(function aE(){
+  const W=ecv.width,H=ecv.height,c=EM[em];
+  eT+=c.spd>.5?c.spd*.44:.01;
+  ecData.push(gP(em));if(ecData.length>W)ecData.shift();
+  ect.clearRect(0,0,W,H);
+  ect.strokeStyle='rgba(240,236,227,.04)';ect.lineWidth=1;
+  for(let x=0;x<W;x+=50){ect.beginPath();ect.moveTo(x,0);ect.lineTo(x,H);ect.stroke();}
+  for(let y=0;y<H;y+=40){ect.beginPath();ect.moveTo(0,y);ect.lineTo(W,y);ect.stroke();}
+  ect.beginPath();ect.moveTo(0,ecData[0]);
+  for(let i=1;i<ecData.length;i++)ect.lineTo(i,ecData[i]);
+  ect.strokeStyle=c.col;ect.lineWidth=1.8;
+  ect.shadowBlur=c.v==='f'?0:8;ect.shadowColor=c.col;
+  ect.stroke();ect.shadowBlur=0;
+  const fg=ect.createLinearGradient(0,0,W,0);
+  fg.addColorStop(0,'rgba(9,9,15,0)');fg.addColorStop(.78,'rgba(9,9,15,0)');fg.addColorStop(1,'rgba(9,9,15,1)');
+  ect.fillStyle=fg;ect.fillRect(0,0,W,H);
+  requestAnimationFrame(aE);
+})();
 
-function animECG() {
-  const W = ECG_W(), H = ECG_H();
-  const cfg = ecgModes[ecgMode];
-
-  ecgT += cfg.speed > 0 ? cfg.speed * 0.5 : 0;
-  const newY = generateECGPoint(ecgMode);
-  ecgData.push(newY);
-  if (ecgData.length > W) ecgData.shift();
-
-  eCtx.clearRect(0, 0, W, H);
-
-  // Grid
-  eCtx.strokeStyle = 'rgba(255,255,255,0.03)';
-  eCtx.lineWidth = 1;
-  for (let x = 0; x < W; x += 40) { eCtx.beginPath(); eCtx.moveTo(x, 0); eCtx.lineTo(x, H); eCtx.stroke(); }
-  for (let y = 0; y < H; y += 30) { eCtx.beginPath(); eCtx.moveTo(0, y); eCtx.lineTo(W, y); eCtx.stroke(); }
-
-  // ECG line
-  eCtx.beginPath();
-  eCtx.moveTo(0, ecgData[0]);
-  for (let i = 1; i < ecgData.length; i++) eCtx.lineTo(i, ecgData[i]);
-  eCtx.strokeStyle = cfg.color;
-  eCtx.lineWidth = 2;
-  eCtx.shadowBlur = 8;
-  eCtx.shadowColor = cfg.color;
-  eCtx.stroke();
-  eCtx.shadowBlur = 0;
-
-  // Glow trail
-  const grad = eCtx.createLinearGradient(0, 0, W, 0);
-  grad.addColorStop(0, 'rgba(5,5,8,0)');
-  grad.addColorStop(0.8, 'rgba(5,5,8,0)');
-  grad.addColorStop(1, 'rgba(5,5,8,1)');
-  eCtx.fillStyle = grad;
-  eCtx.fillRect(0, 0, W, H);
-
-  requestAnimationFrame(animECG);
-}
-animECG();
-
-// ......... TIMELINE DOTS ACTIVATION .........
-const tlDots = document.querySelectorAll('.tl-dot');
-const tlObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { const dot = e.target.querySelector('.tl-dot'); if (dot) dot.classList.add('active'); }
-  });
-}, { threshold: 0.6 });
-document.querySelectorAll('.timeline-item').forEach(item => tlObs.observe(item));
-
-// ......... BODY ENTRIES ACTIVE STATE .........
-const bodyEntries = document.querySelectorAll('.body-entry');
-const beObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      bodyEntries.forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-    }
-  });
-}, { threshold: 0.5, rootMargin: '-20% 0px -20% 0px' });
-bodyEntries.forEach(b => beObs.observe(b));
-
-// ......... KEYBOARD SHORTCUT EASTER EGG .........
-let konami = [];
-const code = [38,38,40,40,37,39,37,39,66,65];
-document.addEventListener('keydown', e => {
-  konami.push(e.keyCode);
-  if (konami.length > 10) konami.shift();
-  if (JSON.stringify(konami) === JSON.stringify(code)) {
-    document.body.style.filter = 'hue-rotate(180deg)';
-    setTimeout(() => document.body.style.filter = '', 2000);
-  }
-});
-
+/* ── CTA BACKGROUND ECG ── */
+const cc=document.getElementById('cta-ecg'),cx=cc.getContext('2d');
+function rzC(){cc.width=cc.offsetWidth;cc.height=cc.offsetHeight;}
+rzC();window.addEventListener('resize',rzC);
+let cT=0,cD=[];
+(function aC(){
+  const W=cc.width,H=cc.height;
+  if(cD.length!==W)cD=new Array(W).fill(H/2);
+  cT+=1.2;
+  const per=60/72*54,ph=(cT%per)/per;
+  let y=0;
+  if(ph<.04)y=-26;else if(ph<.09)y=58;else if(ph<.12)y=-32;else if(ph<.2)y=24;
+  cD.push(H/2-y+(Math.random()-.5));if(cD.length>W)cD.shift();
+  cx.clearRect(0,0,W,H);
+  cx.beginPath();cx.moveTo(0,cD[0]);
+  for(let i=1;i<cD.length;i++)cx.lineTo(i,cD[i]);
+  cx.strokeStyle='rgba(240,236,227,1)';cx.lineWidth=1.5;cx.stroke();
+  requestAnimationFrame(aC);
+})();
 </script>
 </body>
 </html>
